@@ -113,3 +113,9 @@ Original source references:
 
 The original frontend README is retained in frontend/README.md.
 This repository does not relicense upstream source code.
+
+## Public hosted demo
+
+Hosting configuration is provided in vercel.json. Use the repository root as the Vercel project root and connect a managed PostgreSQL database. See [hosting configuration](backend/deploy/README.md) and [verification](backend/qa/reports/HOSTING-VERIFICATION.md).
+
+Local baseline mode preserves the original defects. The public copy enables separate protections, sample-only accounts and ten-second updates for chat and announcements. Its registration and external uploads are disabled. This repository does not embed database credentials or session secrets.

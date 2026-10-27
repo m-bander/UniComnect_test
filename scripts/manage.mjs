@@ -30,13 +30,14 @@ const pnpm=path.join(root,"node_modules/pnpm/bin/pnpm.cjs");
 const command=process.argv[2];
 try{
  switch(command){
+ case "install":
  case "setup":
    if(Number(process.versions.node.split(".")[0])<24)throw new Error("Use Node.js 24 or newer.");
    if(!fs.existsSync(pnpm))throw new Error("Run npm install in the repository root first.");
    await run([pnpm,"install","--frozen-lockfile","--ignore-scripts"],backend);
    await run([pnpm,"install","--frozen-lockfile","--ignore-scripts"],frontend);
-   if(!fs.existsSync(path.join(frontend,".env.local")))fs.copyFileSync(path.join(frontend,".env.example"),path.join(frontend,".env.local"));
-   await run([playwright,"install","chromium"],backend);
+   if(command==="setup" && !fs.existsSync(path.join(frontend,".env.local")))fs.copyFileSync(path.join(frontend,".env.example"),path.join(frontend,".env.local"));
+   if(command==="setup") await run([playwright,"install","chromium"],backend);
    console.log("\nSetup complete. Run npm run dev to open the app, or npm test to run the full suite.");
    break;
  case "dev":

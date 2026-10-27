@@ -4,7 +4,7 @@
   "private": true,
   "description": "UniConnect frontend, backend and reproducible software testing environment",
   "engines": {
-    "node": ">=24.0.0"
+    "node": "24.x"
   },
   "scripts": {
     "setup": "node scripts/manage.mjs setup",

@@ -18,7 +18,8 @@ const useStudentClassAnnouncements = () => {
 
   const { data: classAnnouncements, isLoading: isLoadingClassAnnouncements } =
     useQuery<Announcement[]>({
-      queryKey: announcementsQueryKey,
+      refetchInterval: import.meta.env.VITE_HOSTED === "1" ? 10000 : false,
+    queryKey: announcementsQueryKey,
       initialData: [],
       enabled: !isLoadingAuth && !!studentClass,
       queryFn: async () => {
@@ -43,7 +44,7 @@ const useStudentClassAnnouncements = () => {
   useEffect(() => {
     // TODO: handle fetching errors
     if (!studentClass) throw new Error("studentClass is undefined.");
-    const socket = openSocket(import.meta.env.VITE_SERVER_URL);
+    const socket = openSocket(import.meta.env.VITE_SERVER_URL || undefined, { autoConnect: import.meta.env.VITE_HOSTED !== "1", transports: import.meta.env.VITE_HOSTED === "1" ? ["websocket"] : ["polling", "websocket"] });
     socket.on(`years-${studentClass}-polls`, ({ data, action }) => {
       queryClient.setQueryData(
         ["class-announcements", studentClass],

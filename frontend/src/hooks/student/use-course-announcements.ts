@@ -11,6 +11,7 @@ export const useCourseAnnouncements = (courseCode: string | undefined) => {
   );
 
   const { data: announcements, isLoading } = useQuery<Announcement[]>({
+    refetchInterval: import.meta.env.VITE_HOSTED === "1" ? 10000 : false,
     queryKey: courseAnnouncementsQueryKey,
     queryFn: async () => {
       // TODO: handle fetching errors
@@ -27,7 +28,7 @@ export const useCourseAnnouncements = (courseCode: string | undefined) => {
   useEffect(() => {
     // TODO: handle fetching errors
     if (!courseCode) throw new Error("courseCode is undefined.");
-    const socket = openSocket(import.meta.env.VITE_SERVER_URL);
+    const socket = openSocket(import.meta.env.VITE_SERVER_URL || undefined, { autoConnect: import.meta.env.VITE_HOSTED !== "1", transports: import.meta.env.VITE_HOSTED === "1" ? ["websocket"] : ["polling", "websocket"] });
     socket.on(`courses-${courseCode}-polls`, ({ data, action }) => {
       console.log(data, action);
       queryClient.setQueryData(

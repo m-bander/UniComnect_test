@@ -72,7 +72,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       async (error: AxiosError) => {
         const orginalRequest = error.config as RetryRequestConfig;
 
-        if (error.response?.status === 403) {
+        if (error.response?.status === 403 && !orginalRequest._retry && !orginalRequest.url?.includes("/auth/refresh")) {
           try {
             // attempt to get a new access token
             const res = await api.get<refreshResponse>("/api/auth/refresh");

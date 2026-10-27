@@ -1,6 +1,6 @@
 import { CorsOptions } from "cors";
 
-const allowedOrigins: string[] = [process.env.CLIENT_URL!];
+const allowedOrigins: string[] = [process.env.CLIENT_URL, process.env.VERCEL_URL ? "https://" + process.env.VERCEL_URL : undefined, process.env.VERCEL_PROJECT_PRODUCTION_URL ? "https://" + process.env.VERCEL_PROJECT_PRODUCTION_URL : undefined].filter((value): value is string => !!value);
 
 const corsOptions: CorsOptions = {
   origin: (origin, callback) => {

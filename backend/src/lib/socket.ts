@@ -1,3 +1,4 @@
+import { safePayload } from "../utils/safePayload";
 import http, { IncomingMessage, ServerResponse } from "http";
 import { Server as SocketIOServer } from "socket.io";
 
@@ -12,6 +13,11 @@ export const initializeWebSocketServer = (
       methods: ["GET", "POST"],
     },
   });
+  if (process.env.UNICONNECT_PUBLIC_HOST === "1") {
+    io.use((_socket, next) => next(new Error("Hosted demo uses authenticated HTTP polling.")));
+    const emit = io.emit.bind(io);
+    io.emit = ((name: string, ...args: any[]) => emit(name, ...args.map(safePayload))) as typeof io.emit;
+  }
   return io;
 };
 

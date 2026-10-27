@@ -15,6 +15,7 @@ const useGroup = () => {
   const { data: messagesWithGroup, isLoading: isLoadingMessages } = useQuery<
     MessageResponse["data"]
   >({
+    refetchInterval: import.meta.env.VITE_HOSTED === "1" ? 10000 : false,
     queryKey: ["group", id],
     queryFn: async () => {
       // TODO: Fetch only last n messages and fetch more as the user scroll
@@ -27,7 +28,7 @@ const useGroup = () => {
   });
 
   useEffect(() => {
-    const socket = openSocket(import.meta.env.VITE_SERVER_URL);
+    const socket = openSocket(import.meta.env.VITE_SERVER_URL || undefined, { autoConnect: import.meta.env.VITE_HOSTED !== "1", transports: import.meta.env.VITE_HOSTED === "1" ? ["websocket"] : ["polling", "websocket"] });
     socket.on(`messages-group-${id}`, (data) => {
       switch (data.action) {
         case "create":

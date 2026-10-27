@@ -11,6 +11,7 @@ const useNotifications = (enrolledCourses: Course[]) => {
   const queryClient = useQueryClient();
 
   const { data: notifications } = useQuery<Notification[]>({
+    refetchInterval: import.meta.env.VITE_HOSTED === "1" ? 10000 : false,
     queryKey: ["notifications"],
     queryFn: async () => {
       if (!auth.user?.id) {

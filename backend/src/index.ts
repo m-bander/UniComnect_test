@@ -1,3 +1,5 @@
+import { createServer } from "node:http";
+import { hostedAccess, sanitizeHostedResponse } from "./middleware/publicHost";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
@@ -26,15 +28,21 @@ import { createRouteHandler } from "uploadthing/express";
 import { uploadRouter } from "./config/uploadthing";
 import { initializeWebSocketServer } from "./lib/socket";
 
+if (process.env.VERCEL) process.env.UNICONNECT_PUBLIC_HOST = "1";
 const app = express();
 
 app.use(credentials);
 app.use(cors(corsOptions));
 
 app.use(cookieParser());
-app.use(express.json());
+app.use(express.json({ limit: "1mb" }));
 
-if (process.env.UNICONNECT_LOCAL_QA !== "1") app.use(
+app.get("/api/health", (_req,res) => res.json({status:"ok"}));
+if (process.env.UNICONNECT_PUBLIC_HOST === "1") {
+  app.use("/api", sanitizeHostedResponse, hostedAccess);
+}
+
+if (process.env.UNICONNECT_LOCAL_QA !== "1" && process.env.UNICONNECT_PUBLIC_HOST !== "1") app.use(
   "/api/uploadthing",
   createRouteHandler({
     router: uploadRouter,
@@ -65,10 +73,11 @@ app.use("/api/admin", adminRoutes);
 // Error Middleware
 app.use(handleError);
 
-const port = Number(process.env.PORT || 3000);
-const host = process.env.UNICONNECT_LOCAL_QA === "1" ? "127.0.0.1" : "0.0.0.0";
-const server = app.listen(port, host, () => {
-  console.log("SERVER RUNNING ON PORT " + port);
-});
-
+export const server = createServer(app);
 initializeWebSocketServer(server);
+export { app };
+if (!process.env.VERCEL) {
+  const port = Number(process.env.PORT || 3000);
+  const host = process.env.UNICONNECT_LOCAL_QA === "1" ? "127.0.0.1" : "0.0.0.0";
+  server.listen(port, host, () => console.log("SERVER RUNNING ON PORT " + port));
+}

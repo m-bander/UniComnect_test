@@ -31,6 +31,6 @@ export const verifyAuth: RequestHandler = (
     if (err instanceof TokenExpiredError)
       return res.status(403).json({ message: "Expired access token." });
 
-    res.sendStatus(500);
+    res.sendStatus(process.env.UNICONNECT_PUBLIC_HOST === "1" ? 401 : 500);
   }
 };
