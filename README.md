@@ -67,7 +67,9 @@ If Chromium fails to launch on Linux, install its system dependencies using the 
 The existing baseline has **25 passed and 9 failed tests**.
 A full test run returns a nonzero exit code while the known defects remain.
 These are real required-behavior failures; they are not marked as expected failures.
-The packaged copy was verified on Windows with Chromium: 25 passed and 9 known defect failures.\nSee [packaged verification](backend/qa/reports/PACKAGED-VERIFICATION.md).\nThe commands are designed for macOS and Linux too; those operating systems were not executed in this verification.
+The packaged copy was verified on Windows with Chromium: 25 passed and 9 known defect failures.
+See [packaged verification](backend/qa/reports/PACKAGED-VERIFICATION.md).
+The commands are designed for macOS and Linux too; those operating systems were not executed in this verification.
 
 ## Project layout
 
@@ -94,7 +96,13 @@ The frozen pnpm lockfiles in each application record the dependencies used for t
 The setup command runs that pinned package manager automatically; do not run npm install inside
 frontend/ or backend/ against their older npm lockfiles.
 
-## Team access\n\nThis repository is private. The owner can invite teammates from **Settings → Collaborators → Add people**.\nEach teammate must accept the invitation and authenticate with GitHub before cloning.\nNever put GitHub tokens or production credentials in the repository.\n\n## Original authors and source
+## Team access
+
+This repository is private. The owner can invite teammates from **Settings → Collaborators → Add people**.
+Each teammate must accept the invitation and authenticate with GitHub before cloning.
+Never put GitHub tokens or production credentials in the repository.
+
+## Original authors and source
 
 The application was developed by Moslem Ahmed, Marwan Mohammed and Abdulrhman Jalal.
 This repository combines their application with a separate local testing environment and QA work.
