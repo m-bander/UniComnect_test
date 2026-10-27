@@ -1,0 +1,20 @@
+{
+  "name": "unicomnect-test",
+  "version": "1.0.0",
+  "private": true,
+  "description": "UniConnect frontend, backend and reproducible software testing environment",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "setup": "node scripts/manage.mjs setup",
+    "dev": "node scripts/manage.mjs dev",
+    "test": "node scripts/manage.mjs test",
+    "test:smoke": "node scripts/manage.mjs smoke",
+    "test:report": "node scripts/manage.mjs report",
+    "build": "node scripts/manage.mjs build"
+  },
+  "devDependencies": {
+    "pnpm": "11.25.0"
+  }
+}
