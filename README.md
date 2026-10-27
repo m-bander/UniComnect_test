@@ -14,6 +14,14 @@ No Docker, PostgreSQL installation, database credentials or UploadThing account 
   after setup, run `cd backend && node node_modules/@playwright/test/cli.js install --with-deps chromium`.
   This may ask for administrator access to install OS libraries.
 
+## Open the shared demo
+
+**https://unicomnect-test.vercel.app**
+
+Use student@uniconnect.test with password UniConnect123!.
+No installation is needed to try the hosted demo. It uses shared sample data; registration and uploads are disabled.
+See [hosting details and verified checks](HOSTED.md).
+
 ## Get started
 
 ```sh

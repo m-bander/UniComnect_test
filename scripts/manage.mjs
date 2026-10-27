@@ -43,6 +43,7 @@ try{
  case "dev":
    await Promise.all([run(["--import","tsx","qa/start.ts"],backend),run(["node_modules/vite/bin/vite.js","--host","localhost","--port","5173","--strictPort"],frontend)]);
    break;
+ case "public":await run(["qa/public-smoke.cjs","https://unicomnect-test.vercel.app"],backend);break;
  case "test":await run([playwright,"test"],backend);break;
  case "smoke":await run([playwright,"test","functional.spec.ts","browser.spec.ts"],backend);break;
  case "report":await run([playwright,"show-report","qa/artifacts/html"],backend);break;

@@ -12,7 +12,8 @@
     "test": "node scripts/manage.mjs test",
     "test:smoke": "node scripts/manage.mjs smoke",
     "test:report": "node scripts/manage.mjs report",
-    "build": "node scripts/manage.mjs build"
+    "build": "node scripts/manage.mjs build",
+    "test:public": "node scripts/manage.mjs public"
   },
   "devDependencies": {
     "pnpm": "11.25.0"
