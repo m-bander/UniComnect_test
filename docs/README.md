@@ -13,6 +13,7 @@ product, or local development to run the code.
 | [Architecture](technical/ARCHITECTURE.md) | Code structure, request flow, database and API areas. |
 | [Testing](testing/README.md) | Separate testing environments, commands and evidence. |
 | [Test plan](testing/TEST-PLAN.md) | Scope, requirements, 50 starter scenarios, team proposal and completion criteria. |
+| [Test plan in Word](testing/UniConnect-Test-Plan.docx) | Editable six-page edition of the test plan. |
 | [How to test](testing/HOW-TO-TEST.md) | Practical execution, bug reporting, retesting and final delivery. |
 | [Contributing](../CONTRIBUTING.md) | Team branches, changes, reviews and bug reports. |
 | [Credits](CREDITS.md) | Upstream authors and source history. |
