@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import { and, eq } from "drizzle-orm";
 import { db } from "../drizzle/db";
-import { assignment, CoursesTable, enrolledIn, manages, message, submission, Teaches, MaterialTable, event, announcement, coursesAnnouncements, classesAnnouncements, pollItem, hostedUpload } from "../drizzle";
+import { assignment, CoursesTable, enrolledIn, manages, message, submission, Teaches, MaterialTable, event, announcement, coursesAnnouncements, classesAnnouncements, pollItem, hostedUpload, blacklist } from "../drizzle";
 import { z } from "zod";
 import { APIRequest } from "../types/api";
 import { safePayload } from "../utils/safePayload";
@@ -37,6 +37,7 @@ export const hostedAccess: RequestHandler = (req: APIRequest, res, next) => {
       if (!req.user) return res.status(401).json({message:"Sign in first."});
       const userId=req.user.userId, admin=req.user.role==="system_admin";
       const deny=()=>res.status(403).json({message:"You do not have permission for this record."});
+      if(req.path.startsWith("/stats/")&&req.path!=="/stats/record-session-duration"&&!admin)return deny();
       const writable=(access:{teacher:boolean,manager:boolean})=>access.teacher||access.manager||req.user?.role==="class_representative";
       const requireCourse=async(code:string,write=false)=>{
         const access=await courseAccess(userId,code,admin);
@@ -75,6 +76,7 @@ export const hostedAccess: RequestHandler = (req: APIRequest, res, next) => {
         const code=decodeURIComponent(courseMatch[1]);
         const access=await courseAccess(userId,code,admin);
         const enrolling=req.method==="POST" && /\/enrollments$/.test(req.path);
+        if(enrolling&&await db.query.blacklist.findFirst({where:and(eq(blacklist.courseCode,code),eq(blacklist.userId,userId))}))return deny();
         const joining=req.method==="POST" && /\/instructors\/me$/.test(req.path) && req.user.role==="professor/ta";
         if (!access.member && !enrolling && !joining) return deny();
         const assignmentMatch=req.path.match(/\/assignments\/([^/]+)/);
@@ -95,6 +97,8 @@ export const hostedAccess: RequestHandler = (req: APIRequest, res, next) => {
                    !joining && !writable(access)) return deny();
       }
       const chat=req.path.match(/^\/groups\/([^/]+)\/messages(?:\/([^/]+))?/);
+      const groupInfo=req.path.match(/^\/groups\/([^/]+)$/);
+      if(groupInfo){const course=await db.query.CoursesTable.findFirst({where:eq(CoursesTable.group_id,groupInfo[1])});if(!course||!(await courseAccess(userId,course.code,admin)).member)return deny();}
       if (chat) {
         const course=await db.query.CoursesTable.findFirst({where:eq(CoursesTable.group_id,chat[1])});
         if (!course || !(await courseAccess(userId,course.code,admin)).member) return deny();

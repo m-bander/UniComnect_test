@@ -32,24 +32,29 @@ try{
  switch(command){
  case "install":
  case "setup":
+ case "setup-testing":
    if(Number(process.versions.node.split(".")[0])<24)throw new Error("Use Node.js 24 or newer.");
    if(!fs.existsSync(pnpm))throw new Error("Run npm install in the repository root first.");
    await run([pnpm,"install","--frozen-lockfile","--ignore-scripts"],backend);
    await run([pnpm,"install","--frozen-lockfile","--ignore-scripts"],frontend);
-   if(command==="setup" && !fs.existsSync(path.join(frontend,".env.local")))fs.copyFileSync(path.join(frontend,".env.example"),path.join(frontend,".env.local"));
-   if(command==="setup") await run([playwright,"install","chromium"],backend);
-   console.log("\nSetup complete. Run npm run dev to open the app, or npm test to run the full suite.");
+   if(command==="setup-testing") await run([playwright,"install","chromium"],backend);
+   console.log("\nSetup complete. Run npm run dev to open UniConnect.");
    break;
  case "dev":
-   await Promise.all([run(["--import","tsx","qa/start.ts"],backend),run(["node_modules/vite/bin/vite.js","--host","localhost","--port","5173","--strictPort"],frontend)]);
-   break;
  case "campus":
+   process.env.VITE_HOSTED="1";process.env.VITE_SERVER_URL="";process.env.CLIENT_URL="http://127.0.0.1:5173";
+   await Promise.all([run(["--import","tsx","app/start.ts"],backend),run(["node_modules/vite/bin/vite.js","--host","127.0.0.1","--port","5173","--strictPort"],frontend)]);
+   break;
+ case "qa":
    process.env.UNICONNECT_PUBLIC_HOST="1";process.env.UNICONNECT_CAMPUS="1";
    process.env.VITE_HOSTED="1";process.env.VITE_SERVER_URL="http://127.0.0.1:3000";process.env.CLIENT_URL="http://127.0.0.1:5173";
    await Promise.all([run(["--import","tsx","qa/start.ts"],backend),run(["node_modules/vite/bin/vite.js","--host","127.0.0.1","--port","5173","--strictPort"],frontend)]);
    break;
+ case "baseline":
+   process.env.UNICONNECT_LEGACY_BASELINE="1";
+   await run([playwright,"test"],backend);break;
  case "campus-test":await run(["qa/campus-smoke.cjs",process.argv[3]||"http://localhost:3000"],backend);break;
- case "public":await run(["qa/public-smoke.cjs","https://unicomnect-test.vercel.app"],backend);break;
+ case "public":await run(["qa/production-health.cjs","https://unicomnect-test.vercel.app"],backend);break;
  case "test":await run([playwright,"test"],backend);break;
  case "smoke":await run([playwright,"test","functional.spec.ts","browser.spec.ts"],backend);break;
  case "report":await run([playwright,"show-report","qa/artifacts/html"],backend);break;
@@ -58,6 +63,6 @@ try{
    await run(["node_modules/typescript/bin/tsc","-b"],frontend);
    await run(["node_modules/vite/bin/vite.js","build"],frontend);
    break;
- default:throw new Error("Use setup, dev, test, smoke, report or build.");
+ default:throw new Error("Use setup, dev, test, smoke, report, qa, baseline, or build.");
  }
 }catch(error){console.error(error.message);stop();process.exitCode=1}

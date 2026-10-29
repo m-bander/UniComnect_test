@@ -34,7 +34,7 @@ export default function Catalog(){
           {!auth.user?<Button asChild variant="outline"><Link to="/signup">Join the campus <ArrowRight size={16}/></Link></Button>:isStudent?enrolled?<Button asChild><Link to={`/student/courses/${c.code}`}>Open course <ArrowRight size={16}/></Link></Button>:<Button variant="outline" disabled={join.isPending} onClick={()=>join.mutate(c.code)}>Join course</Button>:<Button asChild variant="outline"><Link to={auth.user.role==="system_admin"?"/admin/courses":"/instructor/courses"}>Manage courses <ArrowRight size={16}/></Link></Button>}
           </div></article>;
       })}</div>{!courses.length&&<div className="border rounded-xl text-center p-12"><h2 className="text-lg font-semibold">No matching courses</h2><p className="text-muted-foreground mt-2 mb-4">Try another subject or a broader search.</p><Button variant="outline" onClick={()=>{setSearch("");setDepartment("All subjects");setYear("")}}>Clear filters</Button></div>}</>}
-      <p className="text-xs text-muted-foreground mt-10 border-t pt-5">Sample campus: names, enrolments, and academic content are fictional and provided for exploration. Your own account and changes are saved.</p>
+      <p className="text-xs text-muted-foreground mt-10 border-t pt-5">Browse subjects and join your courses. Your enrolments, coursework, and profile are saved to your account.</p>
     </main>
   </div>;
 }

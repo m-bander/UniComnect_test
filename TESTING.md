@@ -1,3 +1,5 @@
+> Current application behavior is documented in [the application guide](docs/APPLICATION-GUIDE.md). Normal startup is persistent; the earlier disposable modes and shared privileged accounts below are historical.
+
 # UniConnect software testing project
 
 ## Current state

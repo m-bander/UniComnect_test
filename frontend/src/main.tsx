@@ -36,6 +36,7 @@ import { StatisticsPage } from "./pages/admin/StatisticsPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import LandingPage from "./pages/user/landing-page";
 import Catalog from "./pages/user/catalog";
+import NotFound from "./pages/NotFound";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 
 const queryClient = new QueryClient();
@@ -113,6 +114,7 @@ createRoot(document.getElementById("root")!).render(
                         element={<Materials />}
                       />
                       <Route path="calendar" element={<Calendar />} />
+                      <Route path="groups/:id" element={<Group />} />
                     </Route>
                   </Route>
 
@@ -134,6 +136,7 @@ createRoot(document.getElementById("root")!).render(
                 </Route>
 
                 <Route path="/unauthorized" element={<Unauthorized />} />
+                <Route path="*" element={<NotFound />} />
               </Routes>
               <Toaster position="top-center" />
             </BrowserRouter>

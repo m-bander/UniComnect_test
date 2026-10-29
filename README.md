@@ -1,41 +1,24 @@
-# UniComnect_test
+# UniConnect
 
-A combined UniConnect frontend, backend and software testing project.
-Clone this repository once: both applications, fixtures, test cases and reports are included.
-No Docker, PostgreSQL installation, database credentials or UploadThing account is required for local QA mode.
+UniConnect is a university learning and communication website with student, instructor,
+class representative, course head, and administrator workspaces.
 
-## Project documentation
+Website: **https://unicomnect-test.vercel.app**
 
-The complete user guide and technical reference covers features, roles, workflows, architecture,
-database design, installation, configuration, APIs, deployment, testing evidence, and limitations.
+## Use the website
 
-- [Read the documentation](docs/PROJECT-DOCUMENTATION.md)
-- [Download the PDF](docs/UniConnect-Project-Documentation.pdf)
-- [Download the editable Word document](docs/UniConnect-Project-Documentation.docx)
+Create your own account at /signup and sign in at /login. Students can join courses,
+download materials, submit assignments, receive grades, vote in polls, use the calendar,
+and talk with their instructors and classmates. Instructor accounts require administrator approval.
+The owner manages users, approvals, and courses through the administrator workspace.
+Shared privileged starter accounts are retired after a real administrator is established.
 
-## Requirements
+The populated courses are illustrative starter content. Users can create and manage their own
+normal accounts, courses, resources, assignments, announcements, and events.
 
-- Node.js 24 LTS or newer, including npm.
-- Git (or download the repository ZIP).
-- Internet access for the initial package/browser download.
-- Free local ports 3000 and 5173.
-- Windows, macOS or Linux. Linux browser automation may require system libraries:
-  after setup, run `cd backend && node node_modules/@playwright/test/cli.js install --with-deps chromium`.
-  This may ask for administrator access to install OS libraries.
+## Run the application locally
 
-## Open the full website
-
-**https://unicomnect-test.vercel.app**
-
-Use student@uniconnect.test with password UniConnect123!.
-The hosted website keeps the original UniConnect student, instructor, and admin workflows.
-Registration is enabled. Browse [the course catalogue](https://unicomnect-test.vercel.app/catalog):
-24 additional courses across eight subject categories, 144 downloadable study guides, assignments,
-polls, calendar events, and discussions. All populated people and content are fictional.
-PDF and image uploads are saved in PostgreSQL (1 MB per file, 20 MB per user, 100 MB total).
-See [hosting details and verified checks](HOSTED.md).
-
-## Get started
+Use Node.js 24 and Git. Clone this private repository using your own GitHub access.
 
 ```sh
 git clone https://github.com/mohamedhany-44/UniComnect_test.git
@@ -45,108 +28,73 @@ npm run setup
 npm run dev
 ```
 
-Open **http://localhost:5173**. The backend runs at http://localhost:3000.
-Stop both servers with Ctrl+C. Restarting recreates a clean database with sample data.
-Each teammate gets an independent local database; this is not a shared hosted app.
-Run setup only once, or after dependency changes. It preserves an existing frontend/.env.local.
+Open **http://127.0.0.1:5173**. The backend uses port 3000.
+Normal application data and session secrets are kept in the ignored **.data/** directory.
+Stopping or restarting the app does not reset that data. Back up this directory before replacing
+or moving a local installation. Each device has its own local database.
+The hosted website uses persistent Neon PostgreSQL and is independent of these local copies.
 
-## Run the populated website locally
+On a fresh local installation, the starter administrator is admin@uniconnect.test with
+password UniConnect123!. Use this local bootstrap account to establish your own administrator.
+These shared privileged credentials are disabled on the hosted website once a real owner exists.
+Do not delete .data to restart the app: deleting it removes your local database and sessions.
 
-After setup, stop other local servers and run `npm run dev:campus`.
-Open **http://127.0.0.1:5173**. This mode enables registration, uploads, the catalogue,
-and the expanded content with hosted permissions. Its local in-memory database resets on restart.
-The public website stores data persistently in Neon PostgreSQL.
-Use `npm run test:campus` while this local mode is running, or `npm run test:campus:public`
-to verify the hosted website. These checks create temporary synthetic accounts and coursework,
-then remove those records.
+## Features
 
-## Test accounts
+- Course catalogue with subjects, academic years, keyword search, and enrolment.
+- Course libraries with lectures, tutorials, sheets, quizzes, assignments, and reading resources.
+- Assignment uploads, turn-in state, instructor grading, and feedback.
+- Course and class announcements, polls, notifications, calendar, and discussion groups.
+- Personal profiles, profile pictures, and password changes.
+- Instructor approvals, user and course administration, and administrator statistics.
 
-All accounts use password **UniConnect123!**. These are synthetic local test credentials.
+PDF, PNG, JPEG, and WebP uploads currently support 1 MiB per file, 20 MiB per owner,
+and 100 MiB total. Videos require a separate storage integration and are not enabled.
+File links are unguessable shareable URLs; do not use them for confidential documents.
+Hosted chat and announcement updates refresh approximately every ten seconds.
 
-| Email | Role |
-|---|---|
-| student@uniconnect.test | Student |
-| student2@uniconnect.test | Second student for ownership tests |
-| instructor@uniconnect.test | Instructor |
-| admin@uniconnect.test | Administrator |
-| representative@uniconnect.test | Class representative |
-| head@uniconnect.test | Course head |
-| pending@uniconnect.test | Instructor awaiting approval; login must fail |
+## Development and deployment
 
-The database includes QA-101 Software Testing, course members, an assignment, a graded
-submission, an announcement, an event and a chat message.
+- `npm run dev`: normal persistent application.
+- `npm run build`: backend compilation and frontend production build.
+- `npm run dev:campus`: compatibility alias for the same persistent application.
+- `npm run setup:testing`: install the browser required by optional automated tests.
 
-## Automated tests
+Application startup lives in backend/app/. Shared database schemas and initial data live in
+backend/database/. QA fixtures are not used by normal application startup.
+Vercel builds from the repository root and serves the frontend and API together.
+Required server secrets are DATABASE_URL, ACCESS_TOKEN_SECRET, and REFRESH_TOKEN_SECRET;
+CLIENT_URL configures the frontend origin. Never expose these secrets in VITE variables.
 
-Stop `npm run dev` first to start tests from fresh fixtures.
+## Optional testing workspace
 
-```sh
-npm test
-npm run test:report
-```
+Testing is separate from the normal application and does not need to run for users to use the site.
 
-The tests start and stop both applications automatically. Chromium is the default browser,
-installed by setup, so Microsoft Edge is not required.
-If Chromium fails to launch on Linux, install its system dependencies using the command above.
+- `npm test`: current application regression checks using isolated temporary fixtures.
+- `npm run dev:qa`: disposable, populated QA environment; resets when stopped.
+- `npm run test:campus`: workflow checks against the local server; creates and removes synthetic records.
+- `npm run test:public`: read-only health checks against the hosted website.
+- `npm run test:report`: generated Playwright HTML report.
+- `npm run test:baseline`: explicitly run the historical original defect baseline.
 
-- `npm run test:smoke`: functional API + browser checks.
-- `npm test`: all 34 checks, including known defect checks.
-- `npm run test:report`: view the latest HTML report.
-- `npm run build`: compile the backend and build the frontend.
+Stop normal local servers before starting isolated regression checks. Never publish the legacy
+baseline to the internet. The original 25-pass/9-fail reports document an older implementation;
+they are not the current application's test result. Do not run mutation-based testing on the live
+website; use a local copy or a separate staging deployment and database.
 
-The existing baseline has **25 passed and 9 failed tests**.
-A full test run returns a nonzero exit code while the known defects remain.
-These are real required-behavior failures; they are not marked as expected failures.
-The packaged copy was verified on Windows with Chromium: 25 passed and 9 known defect failures.
-See [packaged verification](backend/qa/reports/PACKAGED-VERIFICATION.md).
-The commands are designed for macOS and Linux too; those operating systems were not executed in this verification.
+## Documentation
 
-## Project layout
+Read [the current application guide](docs/APPLICATION-GUIDE.md) first.
+The [earlier detailed documentation](docs/PROJECT-DOCUMENTATION.md),
+[Word edition](docs/UniConnect-Project-Documentation.docx), and
+[PDF edition](docs/UniConnect-Project-Documentation.pdf) are versioned snapshots from source 5d3b768.
+Their descriptions of disposable local startup and shared hosted credentials are superseded by this guide.
+See [hosting information](HOSTED.md) and [testing guidance](TESTING.md).
 
-- frontend/: React/TypeScript/Vite app.
-- backend/: Express/TypeScript app.
-- backend/qa/: isolated PostgreSQL-compatible PGlite database, fixtures, tests and SQL schema.
-- backend/qa/DEFECTS.md: reproduced issues and proposed remediation.
-- backend/qa/reports/: recorded baseline and test inventory.
-- TESTING.md: detailed scope, accounts and testing guidance.
-- scripts/manage.mjs: portable setup, launch, build and test commands.
+## Original application
 
-Generated database fixtures, tokens, browser traces, dependencies, .env files and build
-outputs are excluded from Git. Reports are generated locally after running the tests.
-
-## Known limitations
-
-The default `npm run dev` command is the original local testing baseline.
-Uploads are disabled in QA mode and several original database stored procedures are missing,
-so some statistics and notification workflows do not work. Security defects are intentionally
-preserved for testing and before/after comparison. See [the defect register](backend/qa/DEFECTS.md).
-Standalone PostgreSQL, real file uploads and sustained production load have not been certified.
-
-The frozen pnpm lockfiles in each application record the dependencies used for testing.
-The setup command runs that pinned package manager automatically; do not run npm install inside
-frontend/ or backend/ against their older npm lockfiles.
-
-## Team access
-
-This repository is private. The owner can invite teammates from **Settings → Collaborators → Add people**.
-Each teammate must accept the invitation and authenticate with GitHub before cloning.
-Never put GitHub tokens or production credentials in the repository.
-
-## Original authors and source
-
-The application was developed by Moslem Ahmed, Marwan Mohammed and Abdulrhman Jalal.
-This repository combines their application with a separate local testing environment and QA work.
-Original source references:
-
-- [UniConnectFrontEnd](https://github.com/MoslemAhmed1/UniConnectFrontEnd), commit 57e1f72e6a9c23e415e41f44ebdec153728d7914.
-- [UniConnectBackEnd](https://github.com/MoslemAhmed1/UniConnectBackEnd), commit a0295ffdce0b526ed8fcbfd2904444aaa4c77a0a.
-
-The original frontend README is retained in frontend/README.md.
-This repository does not relicense upstream source code.
-
-## Public hosted demo
-
-Hosting configuration is provided in vercel.json. Use the repository root as the Vercel project root and connect a managed PostgreSQL database. See [hosting configuration](backend/deploy/README.md) and [verification](backend/qa/reports/HOSTING-VERIFICATION.md).
-
-Local baseline mode preserves the original defects. The hosted copy enables record permissions, open student/instructor registration, persistent PDF/image uploads, and ten-second updates for chat and announcements. Instructor registration requires administrator approval. This repository does not embed database credentials or session secrets.
+Original authors: Moslem Ahmed, Marwan Mohammed, and Abdulrhman Jalal.
+Source repositories: [UniConnectFrontEnd](https://github.com/MoslemAhmed1/UniConnectFrontEnd)
+and [UniConnectBackEnd](https://github.com/MoslemAhmed1/UniConnectBackEnd).
+This combined repository adds portable setup, hosted deployment, application fixes, and a separate
+software testing workspace. It does not relicense upstream source code.

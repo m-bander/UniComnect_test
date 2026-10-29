@@ -9,4 +9,6 @@ node_modules/
 **/qa/test-results/
 *.log
 *.tsbuildinfo
+.data/
+**/~$*
 .DS_Store

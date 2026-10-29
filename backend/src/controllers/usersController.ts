@@ -490,6 +490,7 @@ export const updateUserByAdmin: RequestHandler = async (
       return res.status(400).json({ message: "Missing user id in route." });
 
     const updatedData = usersUpdateSchema.omit({ id: true }).parse(req.body);
+    if(updatedData.password)updatedData.password=await bcrypt.hash(updatedData.password,10);
 
     if(updatedData.email && updatedData.email != targetUser.email) {
       const duplicate = await db.query.UsersTable.findFirst({

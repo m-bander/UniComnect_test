@@ -1,8 +1,8 @@
 {
-  "name": "unicomnect-test",
+  "name": "uniconnect",
   "version": "1.0.0",
   "private": true,
-  "description": "UniConnect frontend, backend and reproducible software testing environment",
+  "description": "UniConnect university learning and communication platform",
   "engines": {
     "node": "24.x"
   },
@@ -16,7 +16,9 @@
     "test:public": "node scripts/manage.mjs public",
     "dev:campus": "node scripts/manage.mjs campus",
     "test:campus": "node scripts/manage.mjs campus-test",
-    "test:campus:public": "node scripts/manage.mjs campus-test https://unicomnect-test.vercel.app"
+    "dev:qa": "node scripts/manage.mjs qa",
+    "test:baseline": "node scripts/manage.mjs baseline",
+    "setup:testing": "node scripts/manage.mjs setup-testing"
   },
   "devDependencies": {
     "pnpm": "11.25.0"

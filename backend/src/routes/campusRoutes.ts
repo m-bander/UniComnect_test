@@ -13,7 +13,7 @@ campusRouter.get("/catalog",async (_req,res,next)=>{
   try {
     const courses=await db.select({code:CoursesTable.code,name:CoursesTable.name,year:CoursesTable.year,department:CoursesTable.department,description:CoursesTable.description,image_url:CoursesTable.image_url,students:db.$count(enrolledIn,eq(enrolledIn.courseCode,CoursesTable.code))}).from(CoursesTable).orderBy(CoursesTable.code);
     const teachers=await db.select({courseCode:Teaches.courseCode,name:sql<string>`${UsersTable.first_name} || ' ' || ${UsersTable.parent_name}`}).from(Teaches).innerJoin(UsersTable,eq(UsersTable.id,Teaches.userId));
-    res.json({departments:departments.map(d=>d.name),sampleData:true,courses:courses.map(c=>{
+    res.json({departments:departments.map(d=>d.name),courses:courses.map(c=>{
       const meta=catalogCourses.find(x=>x.code===c.code);
       return {...c,department:c.department,description:c.description||meta?.description||"Explore course resources, assignments, and discussions.",color:meta?.color||"#2563eb",teachers:teachers.filter(t=>t.courseCode===c.code).map(t=>t.name)};
     })});

@@ -48,7 +48,8 @@ export const getGroups: RequestHandler = async (
       },
     });
 
-    const groups = rows.map((row) => row.course.group);
+    const teaching=await db.query.Teaches.findMany({where:(row,{eq})=>eq(row.userId,userId),with:{course:{with:{group:true}}}});
+    const groups = [...new Map([...rows,...teaching].map(row=>[row.course.group.id,row.course.group])).values()];
 
     response.status(200).json({
       message: "Groups found.",

@@ -4,6 +4,7 @@ import type { Submission } from "@/types/student/submission";
 import appendQueryOptions from "@/utils/query/append-query-options";
 import { useQuery, type QueryMeta } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useAuth } from "@/providers/context/authContext";
 
 type UseStudentSubmissionsArgs = {
   assignmentId: string | undefined;
@@ -18,10 +19,12 @@ export const useStudentSubmissions = ({
   sortingOptions,
   filteringOptions,
 }: UseStudentSubmissionsArgs) => {
+  const {auth}=useAuth();
   const { data: submissionsAndMetadata, isLoading } = useQuery<{
     data: Submission[];
     meta: QueryMeta;
   }>({
+    enabled:!!assignmentId&&!!courseId&&["professor/ta","system_admin"].includes(auth.user?.role||""),
     queryKey: [
       "submissions",
       assignmentId,

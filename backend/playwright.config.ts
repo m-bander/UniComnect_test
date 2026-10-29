@@ -5,7 +5,7 @@ export default defineConfig({
   reporter:[["list"],["html",{outputFolder:"qa/artifacts/html",open:"never"}],["json",{outputFile:"qa/artifacts/results.json"}]],
   use:{baseURL:"http://localhost:5173",browserName:"chromium",channel:process.env.PLAYWRIGHT_CHANNEL || undefined,trace:"retain-on-failure",screenshot:"only-on-failure"},
   webServer:[
-    {command:"node --import tsx qa/start.ts",url:"http://127.0.0.1:3000/api/auth/refresh",reuseExistingServer:!process.env.CI,timeout:60000},
-    {command:"node ../frontend/node_modules/vite/bin/vite.js ../frontend --host localhost --port 5173 --strictPort",url:"http://localhost:5173",reuseExistingServer:!process.env.CI,timeout:60000}
+    {command:"node --import tsx qa/start.ts",url:"http://127.0.0.1:3000/api/auth/refresh",reuseExistingServer:false,timeout:60000},
+    {command:"node ../frontend/node_modules/vite/bin/vite.js ../frontend --host localhost --port 5173 --strictPort",url:"http://localhost:5173",reuseExistingServer:false,timeout:60000}
   ]
 });

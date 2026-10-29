@@ -1,4 +1,3 @@
-import CurvedLoop from "@/components/CurvedLoop";
 import Logo from "@/components/global/Logo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,7 +13,7 @@ import { Link } from "react-router";
 const LandingPage = () => {
   return (
     <>
-      <header className="p-3 flex justify-between items-center">
+      <header className="p-4 flex flex-wrap gap-4 justify-between items-center border-b">
         <Logo
           showText
           asLink
@@ -45,8 +44,8 @@ const LandingPage = () => {
         <Link to="/login"><Button>Login</Button></Link>
         </div>
       </header>
-      <section className="h-screen relative">
-        <div className="absolute top-1/2 start-1/2 -translate-1/2 flex flex-col items-center gap-5">
+      <section className="min-h-[65vh] px-5 py-20 flex items-center justify-center">
+        <div className="max-w-3xl mx-auto flex flex-col items-center gap-6">
           <div className="text-center space-y-2">
             <h1 className="font-bold text-3xl">
               One place for your academic life
@@ -67,22 +66,10 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
-      <section
-        className="h-screen relative flex flex-col items-center"
-        id="contributors"
-      >
-        <h2 className="text-6xl font-bold">Contributors</h2>
-        <CurvedLoop
-          marqueeText="Marwan Mohammed ✦ Abdulrahman Jalal ✦ Moslem Ahmed ✦"
-          speed={2}
-          curveAmount={300}
-          interactive={false}
-          className="fill-black!"
-        />
-      </section>
+      <section className="max-w-6xl mx-auto px-5 py-8 text-center" id="contributors"><h2 className="text-xl font-bold mb-3">Original application contributors</h2><p className="text-muted-foreground">Marwan Mohammed · Abdulrahman Jalal · Moslem Ahmed</p></section>
       <section id="features" className="max-w-6xl mx-auto px-5 py-16">
         <h2 className="text-3xl font-bold mb-3 text-center">Everything you need for the semester</h2>
-        <p className="text-muted-foreground text-center mb-8">Your courses, conversations, and coursework together in the original UniConnect workspace.</p>
+        <p className="text-muted-foreground text-center mb-8">Your courses, conversations, and coursework together in UniConnect.</p>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {[
             ["Courses & study groups", "Join courses and discuss questions with classmates and instructors."],
@@ -94,7 +81,7 @@ const LandingPage = () => {
           ].map(([title, description]) => <Card key={title}><CardContent><h3 className="font-semibold mb-2">{title}</h3><p className="text-sm text-muted-foreground">{description}</p></CardContent></Card>)}
         </div>
         <div className="text-center mt-8"><Button asChild><Link to="/catalog">Explore all subject categories</Link></Button></div>
-        <p className="text-xs text-muted-foreground text-center mt-4">The populated campus uses fictional people and original sample learning resources.</p>
+
       </section>
       <footer className="flex items-center justify-between bg-muted border-t p-3 flex-wrap gap-3">
         <Logo asLink />

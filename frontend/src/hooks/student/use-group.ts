@@ -95,8 +95,8 @@ const useGroup = () => {
     };
 
     await api.post(`/api/groups/${id}/messages`, newMessage);
-
     setMessage("");
+    await queryClient.invalidateQueries({queryKey:["group",id]});
   };
 
   return {

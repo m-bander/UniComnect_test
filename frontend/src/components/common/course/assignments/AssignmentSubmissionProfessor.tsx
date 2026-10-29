@@ -1,3 +1,4 @@
+import DOMPurify from "dompurify";
 import { Card } from "@/components/ui/card";
 import { SUBMISSIONS_TABLE_COLUMNS } from "@/constants/instructor/submissions-table";
 import { useAssignmentData } from "@/hooks/student/use-assignment-data";
@@ -56,7 +57,7 @@ const AssignmentSubmissionProfessor = () => {
               <div
                 className="prose prose-sm max-w-none text-slate-700"
                 dangerouslySetInnerHTML={{
-                  __html: assignment.description ?? "",
+                  __html: DOMPurify.sanitize(assignment.description ?? ""),
                 }}
               />
 

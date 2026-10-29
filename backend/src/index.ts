@@ -29,7 +29,7 @@ import { createRouteHandler } from "uploadthing/express";
 import { uploadRouter } from "./config/uploadthing";
 import { initializeWebSocketServer } from "./lib/socket";
 
-if (process.env.VERCEL) process.env.UNICONNECT_PUBLIC_HOST = "1";
+if (process.env.VERCEL || process.env.UNICONNECT_LEGACY_BASELINE !== "1") process.env.UNICONNECT_PUBLIC_HOST = "1";
 const app = express();
 
 app.use(credentials);
@@ -80,6 +80,6 @@ initializeWebSocketServer(server);
 export { app };
 if (!process.env.VERCEL) {
   const port = Number(process.env.PORT || 3000);
-  const host = process.env.UNICONNECT_LOCAL_QA === "1" ? "127.0.0.1" : "0.0.0.0";
+  const host = process.env.UNICONNECT_LOCAL_QA === "1" || process.env.UNICONNECT_LOCAL_APP === "1" ? "127.0.0.1" : "0.0.0.0";
   server.listen(port, host, () => console.log("SERVER RUNNING ON PORT " + port));
 }

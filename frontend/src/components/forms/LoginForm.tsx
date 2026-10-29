@@ -17,13 +17,6 @@ export default function LoginForm() {
 
   return (
     <form className="flex flex-col gap-6" onSubmit={onSubmit}>
-      {import.meta.env.VITE_HOSTED === "1" && (
-        <div className="rounded-lg border bg-muted p-3 text-sm">
-          <strong>Explore UniConnect</strong>
-          <p>Create your own account, or explore the populated campus with student@uniconnect.test / UniConnect123!.</p>
-          <p className="text-muted-foreground">The campus contains realistic sample content. Instructor accounts require admin approval.</p>
-        </div>
-      )}
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold">Welcome Back!</h1>

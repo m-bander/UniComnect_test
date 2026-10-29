@@ -45,7 +45,7 @@ const PopulatedSidebarContent = () => {
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
-            {hasRole("class_representative", "course_head", "student") && (
+            {hasRole("class_representative", "course_head", "student", "professor/ta") && (
               <GroupsMenuItem />
             )}
           </SidebarMenu>

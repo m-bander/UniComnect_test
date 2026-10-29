@@ -1,6 +1,7 @@
 const {request}=require('@playwright/test');
 const fs=require('node:fs');
 const baseURL=process.argv[2]||'http://localhost:3000';
+if(new URL(baseURL).hostname==='unicomnect-test.vercel.app')throw new Error('Use an isolated local or staging website for mutation-based workflow checks. Run npm run test:public for live health checks.');
 const tag=Date.now().toString(36),code='CAMPUS-'+tag;
 const rows=[],clients=[],createdUsers=[],files=[];
 let admin,teacher,student,courseCreated=false,submissionPath;

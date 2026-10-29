@@ -1,3 +1,4 @@
+import DOMPurify from "dompurify";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileText, Download } from "lucide-react";
@@ -109,7 +110,7 @@ export default function AssignmentSubmission() {
               <div
                 className="prose prose-sm max-w-none text-slate-700"
                 dangerouslySetInnerHTML={{
-                  __html: assignment.description ?? "",
+                  __html: DOMPurify.sanitize(assignment.description ?? ""),
                 }}
               />
 
@@ -171,7 +172,7 @@ export default function AssignmentSubmission() {
                   <div
                     className="prose prose-sm max-w-none text-slate-700"
                     dangerouslySetInnerHTML={{
-                      __html: submission.feedback ?? "",
+                      __html: DOMPurify.sanitize(submission.feedback ?? ""),
                     }}
                   />
                 </Card>

@@ -2,6 +2,7 @@ import {
   useEffect,
   useLayoutEffect,
   useState,
+  useRef,
   type PropsWithChildren,
 } from "react";
 import { AuthContext, type AuthType } from "./context/authContext";
@@ -9,6 +10,7 @@ import api from "@/lib/axios";
 import type { AxiosError, InternalAxiosRequestConfig } from "axios";
 import type { refreshResponse } from "@/types/api/auth";
 import { useActiveTimeOnSite } from "@/hooks/use-active-time-onsite";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface RetryRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
@@ -17,6 +19,13 @@ interface RetryRequestConfig extends InternalAxiosRequestConfig {
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [auth, setAuth] = useState<AuthType>({ user: null, token: null });
   const [loading, setLoading] = useState<boolean>(true);
+  const queryClient=useQueryClient();
+  const previousUser=useRef<string|null>(null);
+  useEffect(()=>{
+    const id=auth.user?.id||null;
+    if(previousUser.current&&previousUser.current!==id)queryClient.clear();
+    previousUser.current=id;
+  },[auth.user?.id,queryClient]);
 
   useActiveTimeOnSite(!!auth.user);
 
@@ -72,7 +81,9 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       async (error: AxiosError) => {
         const orginalRequest = error.config as RetryRequestConfig;
 
-        if (error.response?.status === 403 && !orginalRequest._retry && !orginalRequest.url?.includes("/auth/refresh")) {
+        const authCode=(error.response?.data as {code?:string}|undefined)?.code;
+        const refreshNeeded=import.meta.env.VITE_HOSTED!=="1"||authCode==="TOKEN_EXPIRED"||authCode==="ACCESS_TOKEN_REQUIRED";
+        if (error.response?.status === 403 && refreshNeeded && !orginalRequest._retry && !orginalRequest.url?.includes("/auth/refresh")) {
           try {
             // attempt to get a new access token
             const res = await api.get<refreshResponse>("/api/auth/refresh");

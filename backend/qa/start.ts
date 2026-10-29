@@ -2,6 +2,7 @@ import path from "node:path";
 import fs from "node:fs";
 import crypto from "node:crypto";
 process.env.UNICONNECT_LOCAL_QA = "1";
+if(process.env.UNICONNECT_LEGACY_BASELINE!=="1")process.env.UNICONNECT_PUBLIC_HOST="1";
 process.env.CLIENT_URL ||= "http://localhost:5173";
 process.env.ACCESS_TOKEN_SECRET = crypto.randomBytes(48).toString("hex");
 process.env.REFRESH_TOKEN_SECRET = crypto.randomBytes(48).toString("hex");
