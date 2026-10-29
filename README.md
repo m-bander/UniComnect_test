@@ -1,24 +1,43 @@
 # UniConnect
 
-UniConnect is a university learning and communication website with student, instructor,
-class representative, course head, and administrator workspaces.
+A university learning and communication website. Students join courses, access materials,
+submit coursework and discuss it with their class. Instructors organize teaching and grade
+submissions. Administrators manage accounts, approvals and course membership.
 
-Website: **https://unicomnect-test.vercel.app**
+**[Open the website](https://unicomnect-test.vercel.app)** ·
+**[Website guide](docs/product/WEBSITE-GUIDE.md)** ·
+**[All documentation](docs/README.md)**
+
+The website saves accounts and coursework. Testing is a separate workspace for the graduation
+project. The repository keeps its existing name, `UniComnect_test`.
+
+## What the website does
+
+| Area | Supported workflows |
+| --- | --- |
+| Accounts | Student/instructor registration, login, profile editing and password changes. Instructors require approval. |
+| Catalogue | Search courses, topics and instructors; filter by subject/year; join courses as a student. |
+| Materials | Lectures, sheets, quizzes, assignments, tutorials and textbooks with attached files. Authorized staff manage resources. |
+| Coursework | Instructors publish assignments and deadlines; students upload and turn in work; instructors grade and give feedback. |
+| Communication | Course/class announcements, poll voting, course discussion groups and in-app notifications. |
+| Calendar | Course events and dates in a combined user calendar; authorized staff manage events. |
+| Administration | Users, instructor approvals, existing courses, membership, administrator accounts and statistics. |
+
+Read the [website guide](docs/product/WEBSITE-GUIDE.md) for roles and step-by-step journeys.
+See [features and limits](docs/product/FEATURES-AND-LIMITS.md) for the exact current scope.
 
 ## Use the website
 
-Create your own account at /signup and sign in at /login. Students can join courses,
-download materials, submit assignments, receive grades, vote in polls, use the calendar,
-and talk with their instructors and classmates. Instructor accounts require administrator approval.
-The owner manages users, approvals, and courses through the administrator workspace.
-Shared privileged starter accounts are retired after a real administrator is established.
+1. [Create your own account](https://unicomnect-test.vercel.app/signup).
+2. Sign in. Students can join courses; instructors wait for administrator approval.
+3. Open **My workspace** for the pages available to your role.
 
-The populated courses are illustrative starter content. Users can create and manage their own
-normal accounts, courses, resources, assignments, announcements, and events.
+The owner uses a personal administrator account. Shared privileged starter logins are disabled
+on the hosted site. The included academic content and sample identities are fictional.
 
-## Run the application locally
+## Run on your device
 
-Use Node.js 24 and Git. Clone this private repository using your own GitHub access.
+Install **Node.js 24** and Git. Accept your GitHub collaborator invitation first.
 
 ```sh
 git clone https://github.com/mohamedhany-44/UniComnect_test.git
@@ -28,73 +47,59 @@ npm run setup
 npm run dev
 ```
 
-Open **http://127.0.0.1:5173**. The backend uses port 3000.
-Normal application data and session secrets are kept in the ignored **.data/** directory.
-Stopping or restarting the app does not reset that data. Back up this directory before replacing
-or moving a local installation. Each device has its own local database.
-The hosted website uses persistent Neon PostgreSQL and is independent of these local copies.
+Open **http://127.0.0.1:5173**. A separate database installation is not required.
+Data and sessions persist in the ignored `.data/` folder. Each device has an independent
+database; it does not synchronize with the live site.
+See [local setup](docs/setup/LOCAL-DEVELOPMENT.md), including first administrator setup.
 
-On a fresh local installation, the starter administrator is admin@uniconnect.test with
-password UniConnect123!. Use this local bootstrap account to establish your own administrator.
-These shared privileged credentials are disabled on the hosted website once a real owner exists.
-Do not delete .data to restart the app: deleting it removes your local database and sessions.
+## Repository map
 
-## Features
+```text
+UniComnect_test/
+├── frontend/          React pages, components, forms and browser assets
+├── backend/
+│   ├── app/           Persistent local application startup
+│   ├── database/      Shared schema and starter account initialization
+│   ├── deploy/        Hosted initialization, migrations and campus seed
+│   ├── src/           API routes, controllers, permissions and database models
+│   └── qa/            Isolated fixtures, automated checks and reports
+├── api/               Vercel backend entry point
+├── scripts/           Setup, development, build and Windows helpers
+├── docs/              Product, setup, technical, testing and archived guides
+└── .github/           Issue and pull request templates
+```
 
-- Course catalogue with subjects, academic years, keyword search, and enrolment.
-- Course libraries with lectures, tutorials, sheets, quizzes, assignments, and reading resources.
-- Assignment uploads, turn-in state, instructor grading, and feedback.
-- Course and class announcements, polls, notifications, calendar, and discussion groups.
-- Personal profiles, profile pictures, and password changes.
-- Instructor approvals, user and course administration, and administrator statistics.
+## Common commands
 
-PDF, PNG, JPEG, and WebP uploads currently support 1 MiB per file, 20 MiB per owner,
-and 100 MiB total. Videos require a separate storage integration and are not enabled.
-File links are unguessable shareable URLs; do not use them for confidential documents.
-Hosted chat and announcement updates refresh approximately every ten seconds.
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Normal persistent website. |
+| `npm run build` | Compile backend and build frontend. |
+| `npm run setup:testing` | Install dependencies and the optional test browser. |
+| `npm test` | Regression suite with disposable fixtures. |
+| `npm run dev:qa` | Disposable populated testing website. |
+| `npm run test:campus` | Workflow checks against a separate local test server. |
+| `npm run test:public` | Read-only health checks on the live site. |
+| `npm run test:report` | Generated browser test report. |
 
-## Development and deployment
+Read the [testing guide](docs/testing/README.md) before tests that create records.
+Original baseline failures describe older code, not the current website's results.
 
-- `npm run dev`: normal persistent application.
-- `npm run build`: backend compilation and frontend production build.
-- `npm run dev:campus`: compatibility alias for the same persistent application.
-- `npm run setup:testing`: install the browser required by optional automated tests.
+## Documentation and teamwork
 
-Application startup lives in backend/app/. Shared database schemas and initial data live in
-backend/database/. QA fixtures are not used by normal application startup.
-Vercel builds from the repository root and serves the frontend and API together.
-Required server secrets are DATABASE_URL, ACCESS_TOKEN_SECRET, and REFRESH_TOKEN_SECRET;
-CLIENT_URL configures the frontend origin. Never expose these secrets in VITE variables.
+- [Documentation index](docs/README.md): where to start.
+- [Website guide](docs/product/WEBSITE-GUIDE.md): roles, pages and user journeys.
+- [Features and limits](docs/product/FEATURES-AND-LIMITS.md): exact scope and categories.
+- [Architecture](docs/technical/ARCHITECTURE.md): frontend, API and database.
+- [Deployment](docs/setup/DEPLOYMENT.md): Vercel and PostgreSQL configuration.
+- [Contributing](CONTRIBUTING.md): branches, bug reports and team review.
+- [Credits](docs/CREDITS.md): original authors and source history.
 
-## Optional testing workspace
+Uploads support PDF, PNG, JPEG and WebP: **1 MiB per file**, **20 MiB per owner**, **100 MiB total**.
+Anyone with a download URL can open it. Password-reset email, video storage and institutional
+identity verification are not implemented.
 
-Testing is separate from the normal application and does not need to run for users to use the site.
-
-- `npm test`: current application regression checks using isolated temporary fixtures.
-- `npm run dev:qa`: disposable, populated QA environment; resets when stopped.
-- `npm run test:campus`: workflow checks against the local server; creates and removes synthetic records.
-- `npm run test:public`: read-only health checks against the hosted website.
-- `npm run test:report`: generated Playwright HTML report.
-- `npm run test:baseline`: explicitly run the historical original defect baseline.
-
-Stop normal local servers before starting isolated regression checks. Never publish the legacy
-baseline to the internet. The original 25-pass/9-fail reports document an older implementation;
-they are not the current application's test result. Do not run mutation-based testing on the live
-website; use a local copy or a separate staging deployment and database.
-
-## Documentation
-
-Read [the current application guide](docs/APPLICATION-GUIDE.md) first.
-The [earlier detailed documentation](docs/PROJECT-DOCUMENTATION.md),
-[Word edition](docs/UniConnect-Project-Documentation.docx), and
-[PDF edition](docs/UniConnect-Project-Documentation.pdf) are versioned snapshots from source 5d3b768.
-Their descriptions of disposable local startup and shared hosted credentials are superseded by this guide.
-See [hosting information](HOSTED.md) and [testing guidance](TESTING.md).
-
-## Original application
-
-Original authors: Moslem Ahmed, Marwan Mohammed, and Abdulrhman Jalal.
-Source repositories: [UniConnectFrontEnd](https://github.com/MoslemAhmed1/UniConnectFrontEnd)
-and [UniConnectBackEnd](https://github.com/MoslemAhmed1/UniConnectBackEnd).
-This combined repository adds portable setup, hosted deployment, application fixes, and a separate
-software testing workspace. It does not relicense upstream source code.
+Original authors: **Moslem Ahmed, Marwan Mohammed and Abdulrhman Jalal**.
+Original repositories: [frontend](https://github.com/MoslemAhmed1/UniConnectFrontEnd) and
+[backend](https://github.com/MoslemAhmed1/UniConnectBackEnd). This combined repository extends
+their work and does not relicense upstream source code.
