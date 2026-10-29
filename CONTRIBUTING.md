@@ -20,6 +20,17 @@ and [repository map](README.md#repository-map).
 Do not experiment with record deletion or synthetic coursework against the live site. Use a local
 copy or staging with its own database.
 
+## Contributor recognition
+
+Team members are credited in the [README](README.md#team-contributors) and [credits](docs/CREDITS.md).
+GitHub's automatic Contributors panel is based on attributed commits, not collaborator access.
+
+To contribute under your own account, make a real project change on your branch (for example,
+an executed test report, reviewed test case, documentation improvement or bug fix), commit using
+your own Git identity, and open a pull request for review and merge. Use an email associated with
+your GitHub account, or its GitHub-provided private commit email, when configuring your Git identity.
+Do not use another teammate's identity or add co-author credits for work they did not perform.
+
 ## File organization
 
 - UI changes belong in `frontend/src/`; API changes in `backend/src/`.

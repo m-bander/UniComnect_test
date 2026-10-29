@@ -16,6 +16,18 @@ Imported baselines:
 
 ## Combined application
 
+### Project team contributors
+
+- [Mohamed Hany — mohamedhany-44](https://github.com/mohamedhany-44): repository owner and project team.
+- [Ahmed-Ayman22](https://github.com/Ahmed-Ayman22): team contributor.
+- [karimElmalt-95](https://github.com/karimElmalt-95): team contributor.
+- [Adam-Ehab32](https://github.com/Adam-Ehab32): team contributor.
+
+Team credits identify the people participating in this project. They do not assert that every
+listed member has already authored a commit, and they do not replace the original application credits.
+
+### Repository changes
+
 [UniComnect_test](https://github.com/mohamedhany-44/UniComnect_test) combines these sources and adds
 portable setup, hosted deployment, persistent local use, a populated fictional campus, application
 fixes, permissions and separate testing tools. Repository ownership does not replace original authorship.
