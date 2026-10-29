@@ -44,7 +44,9 @@ Git pushes trigger deployments. New builds do not reset hosted data.
 Run npm run test:campus:public to verify registration, approval, course management,
 enrolment, resources, file downloads/uploads, submissions, grading, calendar, polls,
 chat, permissions, statistics and refresh sessions. Temporary synthetic records are cleaned up.
-The most recent detailed result is backend/qa/reports/CAMPUS-SMOKE.json.
+Verified on the public URL at 2026-10-29T14:17:52.676Z: **65 passed, 0 failed**.
+Public report: backend/qa/reports/CAMPUS-PUBLIC.json.
+Local report: backend/qa/reports/CAMPUS-SMOKE.json.
 The earlier 21-check demo report is historical and predates this expanded campus.
 
 The original local QA mode and historical defect reports remain available for the graduation project.
