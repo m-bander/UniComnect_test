@@ -6,6 +6,7 @@ product, or local development to run the code.
 | Guide | What it explains |
 | --- | --- |
 | [Website guide](product/WEBSITE-GUIDE.md) | Purpose, roles, pages and student/instructor/admin journeys. |
+| [Website flowchart](diagrams/Flowchart.svg) | Visual flow through registration, login and the role-specific workspaces. |
 | [Features and limits](product/FEATURES-AND-LIMITS.md) | Supported behavior, categories, sample data and missing features. |
 | [Local development](setup/LOCAL-DEVELOPMENT.md) | Install, run, preserve data, set up an administrator and troubleshoot. |
 | [Deployment](setup/DEPLOYMENT.md) | Hosting, environment variables and database initialization. |

@@ -1,5 +1,11 @@
 # What UniConnect does
 
+## Website flowchart
+
+[Open or download the website flowchart (SVG)](../diagrams/Flowchart.svg).
+
+![UniConnect website flowchart](../diagrams/Flowchart.svg)
+
 UniConnect brings a class's materials, assignments, announcements, calendar and discussions into
 one website. Students join courses and use their workspaces throughout the learning process.
 Instructors publish content, collect work and give feedback. Administrators manage access and
