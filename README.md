@@ -4,6 +4,15 @@ A combined UniConnect frontend, backend and software testing project.
 Clone this repository once: both applications, fixtures, test cases and reports are included.
 No Docker, PostgreSQL installation, database credentials or UploadThing account is required for local QA mode.
 
+## Project documentation
+
+The complete user guide and technical reference covers features, roles, workflows, architecture,
+database design, installation, configuration, APIs, deployment, testing evidence, and limitations.
+
+- [Read the documentation](docs/PROJECT-DOCUMENTATION.md)
+- [Download the PDF](docs/UniConnect-Project-Documentation.pdf)
+- [Download the editable Word document](docs/UniConnect-Project-Documentation.docx)
+
 ## Requirements
 
 - Node.js 24 LTS or newer, including npm.
