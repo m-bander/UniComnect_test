@@ -93,6 +93,7 @@ Original baseline failures describe older code, not the current website's result
 - [Architecture](docs/technical/ARCHITECTURE.md): frontend, API and database.
 - [Deployment](docs/setup/DEPLOYMENT.md): Vercel and PostgreSQL configuration.
 - [Contributing](CONTRIBUTING.md): branches, bug reports and team review.
+- [Test plan and walkthrough](docs/testing/TEST-PLAN.md): what to test and how your team should execute it.
 - [Credits](docs/CREDITS.md): original authors and source history.
 
 Uploads support PDF, PNG, JPEG and WebP: **1 MiB per file**, **20 MiB per owner**, **100 MiB total**.

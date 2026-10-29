@@ -1,5 +1,13 @@
 # Testing UniConnect
 
+## Plan and execution pack
+
+- [Test plan](TEST-PLAN.md): scope, requirements, priorities, environments, team proposal and completion criteria.
+- [How to perform testing](HOW-TO-TEST.md): step-by-step first cycle and a complete coursework example.
+- [50 starter scenarios](TEST-CASES.md): preconditions, steps and expected results; new execution starts as Not Run.
+- [Execution log template](templates/EXECUTION-LOG.md): copy for each new run.
+- [Test summary template](templates/TEST-SUMMARY.md): final coverage, defects and decision.
+
 Test the working application on a separate copy. Normal application startup and the live database
 are not disposable test fixtures.
 
