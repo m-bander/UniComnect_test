@@ -1,38 +1,50 @@
-# Shared hosted demo
+# UniConnect hosted campus
 
-Live URL: https://unicomnect-test.vercel.app
+Website: https://unicomnect-test.vercel.app
+Catalogue: https://unicomnect-test.vercel.app/catalog
 
-Frontend and API: Vercel Hobby.
-Database: Neon Free, Frankfurt. Data is hosted independently of the original local machine.
+The original student, instructor, class representative, course head, and administrator pages
+remain available. The former testing-only registration/upload restrictions have been removed.
 
-Sample login: student@uniconnect.test / UniConnect123!.
-Other seeded roles use the sample accounts listed in README.md.
+## Populated content
 
-## Verified
+Eight subject categories: Computer Science; Software Engineering; Data Science & AI;
+Cybersecurity & Networks; Business & Management; Mathematics & Statistics;
+Design & Media; Languages & Communication.
 
-Public URL smoke run: 2026-10-27T17:26:40.284Z.
-21 passed, 0 failed, using a fresh HTTP client without Vercel authentication cookies.
-Verified login, enrolled course data, assignment data, persistent refresh sessions, statistics, password-field removal,
-student grade protection, cross-student record protection and anonymous chat denial.
-The public student dashboard was also verified through the browser.
+24 additional courses join the existing Software Testing course. Each new course includes
+six original PDF study guides, three assignments, an announcement, a poll, two calendar events,
+and a study-group discussion. Includes 48 additional sample learners and seven additional instructors.
+All sample names, enrolments and academic content are fictional; the PDFs are original illustrative guides.
 
-## Demo behavior
+## Using the website
 
-Anyone with the URL can access the public app and sign in using the synthetic sample accounts.
-All visitors share one hosted database.
-Registration and external uploads are disabled in the public demo.
-Chat and announcement updates refresh every ten seconds.
-The original local QA mode preserves the original defect baseline for graduation-project testing.
+Create your own student account and join courses through the catalogue.
+Instructor accounts require administrator approval before signing in.
+You can also explore with student@uniconnect.test / UniConnect123!.
+The instructor and administrator sample accounts are listed in README.md.
 
-## Repeat public checks
+Course category and overview can be entered when creating or editing a course.
+The catalogue supports subject, academic year, keyword, code, and instructor filters.
+PDF and image uploads persist in PostgreSQL: 1 MB per file, 20 MB per account, 100 MB total.
+Video uploads are not enabled. Download URLs are private, unguessable links that can be shared.
+Chat, announcements, and polls refresh every ten seconds on the free Vercel deployment.
 
-From the repository root: npm run test:public.
-From backend/: node qa/public-smoke.cjs https://unicomnect-test.vercel.app.
+## Hosting
 
-## Hosting settings
+Frontend and API: existing Vercel Hobby project unicomnect-test in the Test workspace.
+Database: existing Neon Free PostgreSQL database unicomnect-test-db in Frankfurt.
+Source: mohamedhany-44/UniComnect_test, main branch.
+No new paid services are used. Environment secrets are held in Vercel and not committed.
+The initializer preserves existing users and applies the expanded content once transactionally.
+Git pushes trigger deployments. New builds do not reset hosted data.
 
-Vercel project: unicomnect-test in the Test workspace.
-GitHub source: mohamedhany-44/UniComnect_test, main branch.
-Neon database: unicomnect-test-db, Free plan.
-Database URL and session secrets are held in Vercel sensitive environment variables and are not committed.
-Git pushes trigger Vercel deployments. The build preserves existing users and does not reset hosted data.
+## Verification
+
+Run npm run test:campus:public to verify registration, approval, course management,
+enrolment, resources, file downloads/uploads, submissions, grading, calendar, polls,
+chat, permissions, statistics and refresh sessions. Temporary synthetic records are cleaned up.
+The most recent detailed result is backend/qa/reports/CAMPUS-SMOKE.json.
+The earlier 21-check demo report is historical and predates this expanded campus.
+
+The original local QA mode and historical defect reports remain available for the graduation project.

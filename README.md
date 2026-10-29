@@ -14,12 +14,16 @@ No Docker, PostgreSQL installation, database credentials or UploadThing account 
   after setup, run `cd backend && node node_modules/@playwright/test/cli.js install --with-deps chromium`.
   This may ask for administrator access to install OS libraries.
 
-## Open the shared demo
+## Open the full website
 
 **https://unicomnect-test.vercel.app**
 
 Use student@uniconnect.test with password UniConnect123!.
-No installation is needed to try the hosted demo. It uses shared sample data; registration and uploads are disabled.
+The hosted website keeps the original UniConnect student, instructor, and admin workflows.
+Registration is enabled. Browse [the course catalogue](https://unicomnect-test.vercel.app/catalog):
+24 additional courses across eight subject categories, 144 downloadable study guides, assignments,
+polls, calendar events, and discussions. All populated people and content are fictional.
+PDF and image uploads are saved in PostgreSQL (1 MB per file, 20 MB per user, 100 MB total).
 See [hosting details and verified checks](HOSTED.md).
 
 ## Get started
@@ -36,6 +40,16 @@ Open **http://localhost:5173**. The backend runs at http://localhost:3000.
 Stop both servers with Ctrl+C. Restarting recreates a clean database with sample data.
 Each teammate gets an independent local database; this is not a shared hosted app.
 Run setup only once, or after dependency changes. It preserves an existing frontend/.env.local.
+
+## Run the populated website locally
+
+After setup, stop other local servers and run `npm run dev:campus`.
+Open **http://127.0.0.1:5173**. This mode enables registration, uploads, the catalogue,
+and the expanded content with hosted permissions. Its local in-memory database resets on restart.
+The public website stores data persistently in Neon PostgreSQL.
+Use `npm run test:campus` while this local mode is running, or `npm run test:campus:public`
+to verify the hosted website. These checks create temporary synthetic accounts and coursework,
+then remove those records.
 
 ## Test accounts
 
@@ -94,7 +108,7 @@ outputs are excluded from Git. Reports are generated locally after running the t
 
 ## Known limitations
 
-This is a local testing baseline, not a production deployment.
+The default `npm run dev` command is the original local testing baseline.
 Uploads are disabled in QA mode and several original database stored procedures are missing,
 so some statistics and notification workflows do not work. Security defects are intentionally
 preserved for testing and before/after comparison. See [the defect register](backend/qa/DEFECTS.md).
@@ -126,4 +140,4 @@ This repository does not relicense upstream source code.
 
 Hosting configuration is provided in vercel.json. Use the repository root as the Vercel project root and connect a managed PostgreSQL database. See [hosting configuration](backend/deploy/README.md) and [verification](backend/qa/reports/HOSTING-VERIFICATION.md).
 
-Local baseline mode preserves the original defects. The public copy enables separate protections, sample-only accounts and ten-second updates for chat and announcements. Its registration and external uploads are disabled. This repository does not embed database credentials or session secrets.
+Local baseline mode preserves the original defects. The hosted copy enables record permissions, open student/instructor registration, persistent PDF/image uploads, and ten-second updates for chat and announcements. Instructor registration requires administrator approval. This repository does not embed database credentials or session secrets.

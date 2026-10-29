@@ -193,6 +193,7 @@ export default function AddAssignmentForm({
             // TODO: Handle the case where the user leaves the form without submitting, either delete the files from upload thing or persist it in local storage (maybe)
           }}
           onUploadError={(error) => {
+            setIsUploading(false);
             console.error(error);
             toast.error("An error has occurred while uploading the file.");
           }}

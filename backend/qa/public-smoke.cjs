@@ -40,7 +40,7 @@ function passwordKeys(value){if(!value||typeof value!=="object")return[];return 
  r=await admin.client.get("/api/stats/general",{headers:admin.headers});
  check("Hosted statistics procedures",r.status()===200,r.status());
  r=await guest.post("/api/users/register",{data:{email:"disabled-signup@uniconnect.test"}});
- check("Public demo registration disabled",r.status()===403,r.status());
+ check("Incomplete registration rejected",r.status()===400,r.status());
  r=await student.client.get("/api/auth/refresh");
  check("Persistent refresh session",r.status()===201,r.status());
  await Promise.all([guest.dispose(),student.client.dispose(),other.client.dispose(),admin.client.dispose()]);

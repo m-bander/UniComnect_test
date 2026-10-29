@@ -50,12 +50,12 @@ export const createSubmission: RequestHandler = async (
         })
         .returning();
 
-      submissionFilesUrls.forEach(async (fileUrl) => {
+      for (const fileUrl of submissionFilesUrls) {
         await tx.insert(submissionsFiles).values({
           file_id: fileUrl,
           submission_id: insertedSubmission.id,
         });
-      });
+      }
 
       return {
         ...insertedSubmission,

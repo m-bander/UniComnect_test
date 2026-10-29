@@ -9,6 +9,8 @@ export const CoursesTable = pgTable("courses", {
   code: varchar({ length: 255 }).primaryKey().notNull(),
   name: varchar({ length: 255 }).notNull(),
   year: years().notNull(),
+  department: varchar({length:255}).notNull().default("General Studies"),
+  description: text(),
   image_url: text(),
   group_id: uuid()
     .references(() => group.id)

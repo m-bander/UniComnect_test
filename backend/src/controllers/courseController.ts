@@ -19,7 +19,7 @@ import {
 } from "drizzle-orm";
 import { RequestHandler } from "express";
 import { ZodError } from "zod";
-import { uploadThingApi } from "../config/uploadthing";
+import { uploadThingApi, imageStorageKey } from "../config/uploadthing";
 import {
   announcement,
   assignment,
@@ -175,7 +175,7 @@ export const updateCourse: RequestHandler = async (
       oldCourseData.image_url !== courseUpdateData.image_url
     ) {
       // delete image first if they exist
-      const key = oldCourseData.image_url.split("/f/")[1];
+      const key = imageStorageKey(oldCourseData.image_url);
       await uploadThingApi.deleteFiles([key]);
     }
 
@@ -652,6 +652,7 @@ export const enrollInCourse: RequestHandler = async (
         courseCode,
         userId,
       })
+      .onConflictDoNothing()
       .returning();
 
     response.status(200).json({

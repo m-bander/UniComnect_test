@@ -1,12 +1,26 @@
 import { createUploadthing, type FileRouter } from "uploadthing/express";
 import { UTApi } from "uploadthing/server";
 import { db } from "../drizzle/db";
-import { FileTable } from "../drizzle";
+import { FileTable, hostedUpload } from "../drizzle";
+import { inArray } from "drizzle-orm";
 import { formatFileSize } from "../utils/fileSize";
 
-export const uploadThingApi = new UTApi({
+const externalUploadApi = new UTApi({
   token: process.env.UPLOADTHING_TOKEN,
 });
+export const uploadThingApi = {
+  async deleteFiles(keys: string[]) {
+    const local=keys.filter(k=>k?.startsWith("db:")).map(k=>k.slice(3));
+    const external=keys.filter(k=>k&&!k.startsWith("db:"));
+    if(local.length)await db.delete(hostedUpload).where(inArray(hostedUpload.fileId,local));
+    const result=external.length?await externalUploadApi.deleteFiles(external):{deletedCount:0,success:true};
+    return {...result,deletedCount:result.deletedCount+local.length};
+  }
+};
+export function imageStorageKey(url:string){
+  const local=url.match(/\/api\/content\/([0-9a-f-]+)\//);
+  return local?`db:${local[1]}`:url.split("/f/")[1];
+}
 
 const f = createUploadthing();
 

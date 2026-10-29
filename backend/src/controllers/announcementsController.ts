@@ -1,4 +1,4 @@
-import { eq, notInArray, sql } from "drizzle-orm";
+import { and, eq, notInArray, sql } from "drizzle-orm";
 import { RequestHandler } from "express";
 import { db } from "../drizzle/db";
 import {
@@ -203,25 +203,25 @@ export const patchAnnouncement: RequestHandler = async (
           .filter((pollItem): pollItem is string => !!pollItem);
 
         if (pollItemsIdsToBePersisted.length > 0) {
-          await db
+          await tx
             .delete(pollItem)
-            .where(notInArray(pollItem.id, pollItemsIdsToBePersisted));
+            .where(and(eq(pollItem.announcement_id,announcementId),notInArray(pollItem.id, pollItemsIdsToBePersisted)));
         }
 
         // Upsert poll items
-        incomingPollItemsData.forEach(async (incomingPollItem) => {
+        for (const incomingPollItem of incomingPollItemsData) {
           if (incomingPollItem.id) {
             await tx
               .update(pollItem)
               .set({ content: incomingPollItem.content })
-              .where(eq(pollItem.id, incomingPollItem.id));
+              .where(and(eq(pollItem.id, incomingPollItem.id),eq(pollItem.announcement_id,announcementId)));
           } else {
             await tx.insert(pollItem).values({
               content: incomingPollItem.content,
               announcement_id: announcementId,
             });
           }
-        });
+        }
       });
     }
 

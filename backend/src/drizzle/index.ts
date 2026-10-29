@@ -37,3 +37,4 @@ export * from "./relations/materialRelations";
 export * from "./relations/fileRelations";
 export * from "./relations/submissionRelations";
 export * from "./relations/sessionRelations";
+export * from "./schemas/hosted-upload";

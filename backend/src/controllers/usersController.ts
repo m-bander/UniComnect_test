@@ -16,7 +16,7 @@ import { and, eq, getTableColumns, not, notInArray, ilike, or } from "drizzle-or
 import { NotFoundError } from "../utils/errors/errors";
 import { CoursesTable, enrolledIn } from "../drizzle";
 import { MaterialTable } from "../drizzle/schemas/materials";
-import { uploadThingApi } from "../config/uploadthing";
+import { uploadThingApi, imageStorageKey } from "../config/uploadthing";
 
 export const updateProfile: RequestHandler = async (
   req: APIRequest<IUsersUpdate>,
@@ -33,6 +33,7 @@ export const updateProfile: RequestHandler = async (
         year: true,
         password: true,
         role: true,
+        isApproved: true,
       })
       .parse(req.body);
 
@@ -42,7 +43,7 @@ export const updateProfile: RequestHandler = async (
         .from(UsersTable)
         .where(eq(UsersTable.email, updatedData.email));
 
-      if (duplicate.length > 0) {
+      if (duplicate.some(user=>user.id!==req.user!.userId)) {
         return res
           .status(400)
           .json({ message: `${updatedData.email} is already used.` });
@@ -297,7 +298,7 @@ export const updateProfilePicture: RequestHandler = async (
 
     if (userData.image_url) {
       // delete image first if they exist
-      const key = userData.image_url.split("/f/")[1];
+      const key = imageStorageKey(userData.image_url);
       await uploadThingApi.deleteFiles([key]);
     }
     await db

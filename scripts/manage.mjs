@@ -43,6 +43,12 @@ try{
  case "dev":
    await Promise.all([run(["--import","tsx","qa/start.ts"],backend),run(["node_modules/vite/bin/vite.js","--host","localhost","--port","5173","--strictPort"],frontend)]);
    break;
+ case "campus":
+   process.env.UNICONNECT_PUBLIC_HOST="1";process.env.UNICONNECT_CAMPUS="1";
+   process.env.VITE_HOSTED="1";process.env.VITE_SERVER_URL="http://127.0.0.1:3000";process.env.CLIENT_URL="http://127.0.0.1:5173";
+   await Promise.all([run(["--import","tsx","qa/start.ts"],backend),run(["node_modules/vite/bin/vite.js","--host","127.0.0.1","--port","5173","--strictPort"],frontend)]);
+   break;
+ case "campus-test":await run(["qa/campus-smoke.cjs",process.argv[3]||"http://localhost:3000"],backend);break;
  case "public":await run(["qa/public-smoke.cjs","https://unicomnect-test.vercel.app"],backend);break;
  case "test":await run([playwright,"test"],backend);break;
  case "smoke":await run([playwright,"test","functional.spec.ts","browser.spec.ts"],backend);break;

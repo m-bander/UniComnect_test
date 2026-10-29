@@ -32,6 +32,8 @@ export const useCourseForm = (
       name: initialCourseData?.name,
       code: initialCourseData?.code,
       year: initialCourseData?.year,
+      department: initialCourseData?.department||"General Studies",
+      description: initialCourseData?.description||"",
     },
   });
   const [imageFile, setChosenFile] = useState<File | undefined>();
@@ -62,6 +64,8 @@ export const useCourseForm = (
           name: data.name,
           year: data.year,
           image_url,
+          department:data.department,
+          description:data.description,
         };
 
         return api.patch(`/api/courses/${initialCourseData.code}`, updateData);
@@ -90,6 +94,7 @@ export const useCourseForm = (
 
       // Refresh shared course listings
       client.invalidateQueries({ queryKey: ["all-courses"] });
+      client.invalidateQueries({ queryKey: ["campus-catalog"] });
       onSuccess?.();
     },
     onError: (err) => {

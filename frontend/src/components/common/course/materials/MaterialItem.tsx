@@ -54,11 +54,11 @@ export default function MaterialItem({
       addSuffix: true,
     });
   } else {
-    formattedDate = format(diffInDays, "MMM d, h:mma");
+    formattedDate = format(uploadedAt, "MMM d, h:mma");
   }
 
   return (
-    <CardContent className="p-6 hover:bg-slate-100/70 transition-colors">
+    <CardContent className="p-6 hover:bg-muted/70 transition-colors">
       <div className="flex items-center justify-between">
         {/* Left Section */}
         <div className="flex items-center gap-4 flex-1">
@@ -67,7 +67,7 @@ export default function MaterialItem({
           </div>
 
           <div className="flex-1">
-            <CardTitle className="text-base font-medium text-slate-800">
+            <CardTitle className="text-base font-medium text-foreground">
               {material.title}
             </CardTitle>
 
@@ -138,8 +138,8 @@ export default function MaterialItem({
                 </AlertDialog>
               </>
             )}
-            <Button variant="ghost" size="icon" className="cursor-pointer">
-              <a href={material.file.url} target="_blank">
+            <Button variant="ghost" size="icon" className="cursor-pointer" asChild>
+              <a href={material.file.url} target="_blank" rel="noopener noreferrer" aria-label={`View ${material.title}`}>
                 <Eye className="w-5 h-5" />
               </a>
             </Button>
@@ -149,6 +149,7 @@ export default function MaterialItem({
               size="icon"
               className="cursor-pointer"
               onClick={handleDownload(material.file)}
+              aria-label={`Download ${material.title}`}
             >
               <Download className="w-5 h-5" />
             </Button>

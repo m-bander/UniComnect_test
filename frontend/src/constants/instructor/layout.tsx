@@ -19,3 +19,4 @@ export const INSTRUCTOR_SIDEBAR_ITEMS: {
     title: "Calendar",
   },
 ] as const;
+if(import.meta.env.VITE_HOSTED==="1")INSTRUCTOR_SIDEBAR_ITEMS.push({icon:Book,title:"Course Catalogue",url:"/catalog"});

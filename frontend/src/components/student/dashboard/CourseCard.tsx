@@ -27,7 +27,7 @@ export default function CourseCard({ course }: CourseCardProps) {
           )}
         </CardHeader>
         <CardContent className="p-4 pt-2 flex-1 flex flex-col gap-1">
-          <h3 className="font-semibold text-slate-800 mb-2">{course.name}</h3>
+          <h3 className="font-semibold text-foreground mb-2">{course.name}</h3>
           <Teachers teachers={course.teachers} />
           <span className="text-slate-500">{course.code}</span>
         </CardContent>

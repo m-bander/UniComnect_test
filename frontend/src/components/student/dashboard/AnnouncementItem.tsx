@@ -23,12 +23,12 @@ export default function AnnouncementItem({
   }
 
   return (
-    <CardHeader className="p-4 m-0 hover:bg-slate-100/70 transition-colors">
+    <CardHeader className="p-4 m-0 hover:bg-muted/70 transition-colors">
       <div className="flex items-start justify-between gap-4">
         <div>
           <CardDescription className="text-xs font-medium text-blue-600 mb-1">
             {"course_id" in announcement ? (
-              <Link to={`courses/${announcement.course_id}`}>
+              <Link to={`/student/courses/${announcement.course_id}`}>
                 {announcement.course_id}
               </Link>
             ) : (
@@ -36,7 +36,7 @@ export default function AnnouncementItem({
             )}
           </CardDescription>
 
-          <CardTitle className="text-sm font-medium text-slate-800">
+          <CardTitle className="text-sm font-medium text-foreground">
             {announcement.type === "announcement" &&
               (announcement.title ||
                 `${announcement.content.slice(0, 200)}${announcement.content.length > 200 ? "..." : ""}`)}

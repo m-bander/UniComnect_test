@@ -1,7 +1,8 @@
 import { RequestHandler } from "express";
 import { and, eq } from "drizzle-orm";
 import { db } from "../drizzle/db";
-import { assignment, CoursesTable, enrolledIn, manages, message, submission, Teaches } from "../drizzle";
+import { assignment, CoursesTable, enrolledIn, manages, message, submission, Teaches, MaterialTable, event, announcement, coursesAnnouncements, classesAnnouncements, pollItem, hostedUpload } from "../drizzle";
+import { z } from "zod";
 import { APIRequest } from "../types/api";
 import { safePayload } from "../utils/safePayload";
 import { verifyAuth } from "./verifyAuth";
@@ -24,21 +25,60 @@ async function courseAccess(userId: string, courseCode: string, admin: boolean) 
 
 // This guard is opt-in for the internet-facing copy. The original local defect baseline remains reproducible.
 export const hostedAccess: RequestHandler = (req: APIRequest, res, next) => {
-  if (["/auth/login","/auth/refresh","/auth/logout","/health"].includes(req.path)) return next();
-  if (req.path === "/users/register" || req.path.startsWith("/uploadthing")) {
-    return res.status(403).json({message:"This public testing demo uses sample accounts; registration and external uploads are disabled."});
+  if (["/auth/login","/auth/refresh","/auth/logout","/health","/catalog"].includes(req.path) || (req.method==="GET" && req.path.startsWith("/content/"))) return next();
+  if (req.path === "/users/register" && req.method==="POST") {
+    const parsed=z.object({first_name:z.string().trim().min(1).max(255),parent_name:z.string().trim().min(1).max(255),grandparent_name:z.string().max(255).optional(),family_name:z.string().max(255).optional(),email:z.email().max(255).transform(v=>v.toLowerCase()),password:z.string().min(8).max(128),role:z.enum(["student","professor/ta"]),year:z.enum(["1","2","3","4","5"]).optional(),code:z.string().min(1).max(255).optional()}).safeParse(req.body);
+    if(!parsed.success)return res.status(400).json({message:"Enter valid account details and a password of at least eight characters."});
+    req.body=parsed.data;
+    return next();
   }
   verifyAuth(req,res,async () => {
     try {
       if (!req.user) return res.status(401).json({message:"Sign in first."});
       const userId=req.user.userId, admin=req.user.role==="system_admin";
       const deny=()=>res.status(403).json({message:"You do not have permission for this record."});
+      const writable=(access:{teacher:boolean,manager:boolean})=>access.teacher||access.manager||req.user?.role==="class_representative";
+      const requireCourse=async(code:string,write=false)=>{
+        const access=await courseAccess(userId,code,admin);
+        return access.member&&(!write||writable(access));
+      };
+      const body=req.body as Record<string,unknown>;
+      // Uploaded files must belong to the person attaching them.
+      const fileIds=[...(Array.isArray(body?.file_ids)?body.file_ids:[]),...(Array.isArray(body?.files_ids)?body.files_ids:[]),...(Array.isArray(body?.attached_files_ids)?body.attached_files_ids:[]),...(typeof body?.file_id==="string"?[body.file_id]:[])];
+      for(const id of fileIds){const file=await db.query.hostedUpload.findFirst({where:eq(hostedUpload.fileId,id)});if(!file||(!admin&&file.ownerId!==userId))return deny();}
+      if(req.path.startsWith("/materials")) {
+        let code=typeof body?.course_code==="string"?body.course_code:undefined;
+        const listing=req.path.match(/^\/materials\/course\/([^/]+)$/);
+        if(listing)code=decodeURIComponent(listing[1]);
+        else if(req.path!=="/materials"&&req.path!=="/materials/"){const material=await db.query.MaterialTable.findFirst({where:eq(MaterialTable.id,req.path.split("/")[2])});code=material?.course_code;}
+        if(!code||!await requireCourse(code,!["GET","HEAD"].includes(req.method)))return deny();
+      }
+      if(/^\/events\/[^/]+/.test(req.path)&&req.method!=="GET"){
+        const item=await db.query.event.findFirst({where:eq(event.id,req.path.split("/")[2])});
+        if(!item||!await requireCourse(item.course_id,true))return deny();
+      }
+      const notice=req.path.match(/^\/announcements\/([^/]+)$/),poll=req.path.match(/^\/poll_items\/([^/]+)\/votes$/);
+      if(notice||poll){
+        let id=notice?.[1];
+        if(poll){const option=await db.query.pollItem.findFirst({where:eq(pollItem.id,poll[1])});id=option?.announcement_id||undefined;}
+        if(!id)return deny();
+        const [course,year,item]=await Promise.all([db.query.coursesAnnouncements.findFirst({where:eq(coursesAnnouncements.announcement_id,id)}),db.query.classesAnnouncements.findFirst({where:eq(classesAnnouncements.announcement_id,id)}),db.query.announcement.findFirst({where:eq(announcement.id,id)})]);
+        if(!admin&&!(course&&await requireCourse(course.course_id,!!notice))&&!(year&&year.class===req.user.year&&(!notice||item?.announcer_id===userId)))return deny();
+      }
+      const deletion=req.path.match(/^\/files\/([^/]+)$/);
+      if(deletion&&req.method==="DELETE"){
+        const file=await db.query.hostedUpload.findFirst({where:eq(hostedUpload.fileId,deletion[1])});
+        if(!file||(!admin&&file.ownerId!==userId))return deny();
+      }
       const courseMatch=req.path.match(/^\/courses\/([^/]+)(?:\/|$)/);
       if (courseMatch && courseMatch[1]!=="course-head") {
         const code=decodeURIComponent(courseMatch[1]);
         const access=await courseAccess(userId,code,admin);
         const enrolling=req.method==="POST" && /\/enrollments$/.test(req.path);
-        if (!access.member && !enrolling) return deny();
+        const joining=req.method==="POST" && /\/instructors\/me$/.test(req.path) && req.user.role==="professor/ta";
+        if (!access.member && !enrolling && !joining) return deny();
+        const assignmentMatch=req.path.match(/\/assignments\/([^/]+)/);
+        if(assignmentMatch){const item=await db.query.assignment.findFirst({where:eq(assignment.id,assignmentMatch[1])});if(!item||item.course_id!==code)return deny();}
         const submissionsMatch=req.path.match(/\/assignments\/([^/]+)\/submissions(?:\/([^/]+))?/);
         if (submissionsMatch) {
           const item=await db.query.assignment.findFirst({where:eq(assignment.id,submissionsMatch[1])});
@@ -52,7 +92,7 @@ export const hostedAccess: RequestHandler = (req: APIRequest, res, next) => {
                 ("grade" in (req.body||{}) || "feedback" in (req.body||{}))) return deny();
           } else if (req.method==="GET" && !access.teacher && req.query.userId!==userId) return deny();
         } else if (!["GET","HEAD"].includes(req.method) && !enrolling &&
-                   !access.teacher && !access.manager && req.user.role!=="class_representative") return deny();
+                   !joining && !writable(access)) return deny();
       }
       const chat=req.path.match(/^\/groups\/([^/]+)\/messages(?:\/([^/]+))?/);
       if (chat) {

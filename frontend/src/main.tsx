@@ -35,6 +35,7 @@ import PendingUsersPage from "./pages/admin/PendingUsersPage";
 import { StatisticsPage } from "./pages/admin/StatisticsPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import LandingPage from "./pages/user/landing-page";
+import Catalog from "./pages/user/catalog";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 
 const queryClient = new QueryClient();
@@ -48,6 +49,7 @@ createRoot(document.getElementById("root")!).render(
             <BrowserRouter>
               <Routes>
                 <Route path="/" element={<LandingPage />} />
+                <Route path="/catalog" element={<Catalog />} />
                 <Route element={<UnAuthGuard />}>
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/signup" element={<SignupPage />} />

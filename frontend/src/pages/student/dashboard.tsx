@@ -25,7 +25,7 @@ export default function Dashboard() {
     <div className="container mx-auto px-6 py-8">
       {/* Welcome Section */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-800 mb-2">
+        <h1 className="text-3xl font-bold text-foreground mb-2">
           {isLoadingProfile ? "Welcome back!" : `Welcome back, ${studentName}!`}
         </h1>
         <p className="text-slate-500">

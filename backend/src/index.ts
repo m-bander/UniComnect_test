@@ -1,5 +1,6 @@
 import { createServer } from "node:http";
 import { hostedAccess, sanitizeHostedResponse } from "./middleware/publicHost";
+import { campusRouter } from "./routes/campusRoutes";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
@@ -35,11 +36,12 @@ app.use(credentials);
 app.use(cors(corsOptions));
 
 app.use(cookieParser());
-app.use(express.json({ limit: "1mb" }));
+app.use(express.json({ limit: "2mb" }));
 
 app.get("/api/health", (_req,res) => res.json({status:"ok"}));
 if (process.env.UNICONNECT_PUBLIC_HOST === "1") {
   app.use("/api", sanitizeHostedResponse, hostedAccess);
+  app.use("/api", campusRouter);
 }
 
 if (process.env.UNICONNECT_LOCAL_QA !== "1" && process.env.UNICONNECT_PUBLIC_HOST !== "1") app.use(

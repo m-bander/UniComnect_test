@@ -1,7 +1,5 @@
 import CurvedLoop from "@/components/CurvedLoop";
 import Logo from "@/components/global/Logo";
-import FeatureItem from "@/components/landing/FeatureItem";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ModeToggle } from "@/components/ui/mode-toggle";
@@ -32,7 +30,7 @@ const LandingPage = () => {
             </NavigationMenuItem>
             <NavigationMenuItem asChild>
               <Button asChild variant="ghost">
-                <a href="#pricing">Pricing</a>
+                <Link to="/catalog">Course Catalogue</Link>
               </Button>
             </NavigationMenuItem>
             <NavigationMenuItem asChild>
@@ -58,14 +56,14 @@ const LandingPage = () => {
               WhatsApp, Google Drive, and scattered tools.
             </p>
             <p className="text-sm text-gray-600">
-              Free. Built by students. No data collection.
+              Courses, resources, conversations, and deadlines in one workspace.
             </p>
           </div>
           <div className="flex items-center gap-3">
             <Button asChild>
               <Link to="/signup">Get started for free</Link>
             </Button>
-            <Button variant="secondary">See how it works</Button>
+            <Button variant="secondary" asChild><Link to="/catalog">Browse courses</Link></Button>
           </div>
         </div>
       </section>
@@ -82,85 +80,33 @@ const LandingPage = () => {
           className="fill-black!"
         />
       </section>
-      <section
-        className="relative flex flex-col items-center mb-3"
-        id="pricing"
-      >
-        <h2 className="text-6xl font-bold mb-3">Pricing</h2>
-        <p className="text-lg mb-7">Just kidding, there's only one option 😉</p>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-4 max-w-4xl">
-          <Card>
-            <CardContent className="space-y-4 flex flex-col items-center h-full">
-              <div className="flex flex-col gap-3 items-center">
-                <Badge>Basic</Badge>
-                <div>
-                  <del className="text-6xl font-bold">$9.99</del>
-                  <span className="text-sm">/mo</span>
-                </div>
-              </div>
-              <ul>
-                <FeatureItem feature="Join and chat in at most 5 courses" />
-                <FeatureItem feature="View and download course materials" />
-              </ul>
-              <Button className="rounded-full mt-auto" disabled>
-                Unavailable
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="space-y-4 flex flex-col items-center h-full">
-              <div className="flex flex-col gap-3 items-center">
-                <Badge>Standard</Badge>
-                <div>
-                  <del className="text-6xl font-bold">$19.99</del>
-                  <span className="text-sm">/mo</span>
-                </div>
-              </div>
-              <ul>
-                <FeatureItem feature="Join and chat in at most 10 courses" />
-                <FeatureItem feature="View and download course materials" />
-                <FeatureItem feature="Submit assignments solutions and view your grades and feedback" />
-              </ul>
-              <Button className="rounded-full mt-auto" disabled>
-                Unavailable
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="space-y-4 flex flex-col items-center">
-              <div className="flex flex-col gap-3 items-center">
-                <Badge>Everything</Badge>
-                <span className="text-6xl font-bold">$0</span>
-                <span className="font-bold text-xl">forever</span>
-              </div>
-              <ul>
-                <FeatureItem feature="Join and chat in all courses" />
-                <FeatureItem feature="View events across all enrolled courses" />
-                <FeatureItem feature="Submit assignments solutions and view your grades and feedback" />
-                <FeatureItem feature="Vote in polls and receive announcements" />
-                <FeatureItem feature="View and download course materials" />
-              </ul>
-              <Button asChild className="rounded-full mt-auto">
-                <Link to="/signup">Get started now</Link>
-              </Button>
-            </CardContent>
-          </Card>
+      <section id="features" className="max-w-6xl mx-auto px-5 py-16">
+        <h2 className="text-3xl font-bold mb-3 text-center">Everything you need for the semester</h2>
+        <p className="text-muted-foreground text-center mb-8">Your courses, conversations, and coursework together in the original UniConnect workspace.</p>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[
+            ["Courses & study groups", "Join courses and discuss questions with classmates and instructors."],
+            ["A complete resource library", "Find lecture guides, tutorials, problem sheets, quizzes, assignments, and reading companions."],
+            ["Assignments & feedback", "Upload your work, track submission status, and see instructor grades and feedback."],
+            ["Calendar & deadlines", "Keep upcoming quizzes, exams, workshops, and project milestones in view."],
+            ["Announcements & polls", "Read class updates, follow course announcements, and vote on learning activities."],
+            ["Teaching & administration", "Create courses, manage materials, approve instructors, and view campus statistics."]
+          ].map(([title, description]) => <Card key={title}><CardContent><h3 className="font-semibold mb-2">{title}</h3><p className="text-sm text-muted-foreground">{description}</p></CardContent></Card>)}
         </div>
+        <div className="text-center mt-8"><Button asChild><Link to="/catalog">Explore all subject categories</Link></Button></div>
+        <p className="text-xs text-muted-foreground text-center mt-4">The populated campus uses fictional people and original sample learning resources.</p>
       </section>
-      <footer className="flex items-center justify-between bg-gray-200 border-t p-3">
+      <footer className="flex items-center justify-between bg-muted border-t p-3 flex-wrap gap-3">
         <Logo asLink />
         <p>Made with ❤ by students, to students.</p>
         <div className="flex items-center gap-2">
           {Object.entries(LANDING_PAGE_HREF_TO_TEXT).map(([href, text]) => (
-            <a href={href} className="underline hover:no-underline">
+            <a key={href} href={href} className="underline hover:no-underline">
               {text}
             </a>
           ))}
           <a
-            href="https://github.com/Marwan878/UniConnectFrontEnd"
+            href="https://github.com/mohamedhany-44/UniComnect_test"
             title="Visit GitHub repo"
           >
             <Github aria-label="App GitHub" />
@@ -173,7 +119,7 @@ const LandingPage = () => {
 
 const LANDING_PAGE_HREF_TO_TEXT = {
   "#features": "Features",
-  "#pricing": "Pricing",
+  "/catalog": "Course Catalogue",
   "#contributors": "Contributors",
 };
 

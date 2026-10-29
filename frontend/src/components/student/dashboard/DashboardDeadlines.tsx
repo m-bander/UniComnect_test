@@ -24,7 +24,7 @@ export default function DashboardDeadlines({
   return (
     <Card className="p-6 gap-0">
       <CardHeader className="space-y-4 p-0">
-        <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+        <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
           <Calendar className="w-5 h-5 text-blue-600" />
           Upcoming Deadlines
         </h3>
@@ -35,7 +35,7 @@ export default function DashboardDeadlines({
         ) : dashboardDeadlines.length === 0 ? (
           <p className="text-sm text-slate-500">No upcoming deadlines</p>
         ) : (
-          dashboardDeadlines.map((event, index) => (
+          dashboardDeadlines.slice(0,6).map((event, index) => (
             <DeadlineItem
               key={index} // Should i use "index" from the .map() instead ?
               title={event.title}

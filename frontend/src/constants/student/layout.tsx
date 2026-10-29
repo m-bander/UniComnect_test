@@ -41,3 +41,4 @@ export const STUDENT_SIDEBAR_ITEMS: {
     title: "Class Members",
   },
 ] as const;
+if(import.meta.env.VITE_HOSTED==="1")STUDENT_SIDEBAR_ITEMS.splice(3,0,{icon:Book,title:"Course Catalogue",url:"/catalog"});
