@@ -1,0 +1,29 @@
+name: Application testing
+on:
+  pull_request:
+  push:
+    branches: [main, "fix/**"]
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm install --ignore-scripts
+      - run: node scripts/manage.mjs install
+      - run: node --import tsx --test tests/auth.test.ts
+        working-directory: backend
+      - run: node scripts/manage.mjs build
+      - run: node node_modules/@playwright/test/cli.js install --with-deps chromium
+        working-directory: backend
+      - run: node node_modules/@playwright/test/cli.js test
+        working-directory: backend
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: backend/qa/artifacts

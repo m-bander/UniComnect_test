@@ -9,6 +9,7 @@ import { seedCampus } from "./seed-campus";
 import { retireStarterAccounts } from "../database/application-accounts";
 
 export async function initializeDatabase() {
+  if (process.env.DATABASE_MIGRATION_APPROVED !== "1") throw new Error("Database initialization requires explicit approval and an isolated database or verified backup.");
   if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL is required.");
   const pool = new Pool({connectionString:process.env.DATABASE_URL,max:1});
   const client=await pool.connect();
@@ -24,17 +25,25 @@ export async function initializeDatabase() {
     }
     await client.query(fs.readFileSync(path.join(__dirname,"001_procedures.sql"),"utf8"));
     await client.query(fs.readFileSync(path.join(__dirname,"002_full_app.sql"),"utf8"));
+    await client.query(`
+      ALTER TABLE "material" DROP CONSTRAINT IF EXISTS "material_uploader_id_users_id_fk";
+      ALTER TABLE "material" ADD CONSTRAINT "material_uploader_id_users_id_fk"
+        FOREIGN KEY ("uploader_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+    `);
+    if (process.env.SEED_DEMO_USERS === "1") {
+    if (!process.env.DEMO_PASSWORD) throw new Error("DEMO_PASSWORD is required for explicit test seeding.");
     const count=await client.query("SELECT count(*)::integer AS count FROM users");
     if(count.rows[0].count===0) {
-      await seedBase(drizzle(client,{schema}), process.env.DEMO_PASSWORD || "UniConnect123!");
+      await seedBase(drizzle(client,{schema}), process.env.DEMO_PASSWORD);
       console.log("Hosted sample accounts and course initialized.");
     } else console.log("Existing users preserved; no sample records overwritten.");
     const migration=await client.query("SELECT name FROM app_migration WHERE name='campus-content-v1'");
     if(!migration.rowCount) {
-      await seedCampus(drizzle(client,{schema}));
+      await seedCampus(drizzle(client,{schema}), process.env.DEMO_PASSWORD);
       await client.query("INSERT INTO app_migration(name) VALUES('campus-content-v1')");
     }
     await retireStarterAccounts(drizzle(client,{schema}));
+    }
     await client.query("COMMIT");
   }catch(error){await client.query("ROLLBACK");throw error}
   finally{client.release();await pool.end()}

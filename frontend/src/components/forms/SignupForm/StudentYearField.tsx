@@ -28,7 +28,7 @@ const StudentYearField = ({
       control={control}
       render={({ field, fieldState }) => (
         <Field orientation="responsive" data-invalid={fieldState.invalid}>
-          <FieldLabel>Current Year</FieldLabel>
+          <FieldLabel htmlFor="year">Current Year</FieldLabel>
           <Select
             name={field.name}
             value={field.value}

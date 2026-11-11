@@ -16,8 +16,8 @@ export function studyPdf(title:string, lines:string[]) {
   return Buffer.from(pdf);
 }
 
-export async function seedCampus(db:any) {
-  const password=await bcrypt.hash("UniConnect123!",10);
+export async function seedCampus(db:any, plainPassword = "UniConnect123!") {
+  const password=await bcrypt.hash(plainPassword,10);
   const sample=await db.query.UsersTable.findMany();
   const primary=sample.find((u:any)=>u.email==="student@uniconnect.test");
   const instructor=sample.find((u:any)=>u.email==="instructor@uniconnect.test");
