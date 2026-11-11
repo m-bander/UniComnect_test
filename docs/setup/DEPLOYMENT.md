@@ -1,6 +1,6 @@
 # UniConnect testing deployment
 
-The testing deployment uses `https://unicomnect-test-test11-04d8.vercel.app` and branch `fix/restore-testing-site`. The old requested address `https://unicomnect-test.vercel.app` returned `DEPLOYMENT_NOT_FOUND` and Vercel reports it assigned to another project, so it cannot be reclaimed from this account. Verify the new deployment health before use.
+The restored testing deployment uses `https://unicomnect-test.vercel.app` and branch `fix/restore-testing-site`. The address returned `DEPLOYMENT_NOT_FOUND` before this recovery. Vercel assigned the original hostname when the first deployment finished. Verify `/api/ready` before testing workflows.
 
 ## Safe hosting configuration
 

@@ -39,7 +39,7 @@ export async function initializeDatabase() {
     } else console.log("Existing users preserved; no sample records overwritten.");
     const migration=await client.query("SELECT name FROM app_migration WHERE name='campus-content-v1'");
     if(!migration.rowCount) {
-      await seedCampus(drizzle(client,{schema}));
+      await seedCampus(drizzle(client,{schema}), process.env.DEMO_PASSWORD);
       await client.query("INSERT INTO app_migration(name) VALUES('campus-content-v1')");
     }
     await retireStarterAccounts(drizzle(client,{schema}));
