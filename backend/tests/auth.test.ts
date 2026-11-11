@@ -117,6 +117,16 @@ test("missing database URL and hosted local flags are configuration errors", asy
   try { assert.ok(runtimeConfigIssues().includes("LOCAL_DATABASE_FLAGS_NOT_ALLOWED")); }
   finally { delete process.env.VERCEL; }
 });
+test("database initialization refuses to run without operator approval", async () => {
+  const { initializeDatabase } = await import("../deploy/initialize");
+  const saved = process.env.DATABASE_MIGRATION_APPROVED;
+  delete process.env.DATABASE_MIGRATION_APPROVED;
+  try { await assert.rejects(initializeDatabase(), /requires explicit approval/); }
+  finally {
+    if (saved === undefined) delete process.env.DATABASE_MIGRATION_APPROVED;
+    else process.env.DATABASE_MIGRATION_APPROVED = saved;
+  }
+});
 test("logging omits credentials, query text and parameters", async () => {
   const { reportServerError } = await import("../src/utils/reportServerError");
   const original = console.error;

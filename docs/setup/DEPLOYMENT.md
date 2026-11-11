@@ -1,6 +1,6 @@
 # UniConnect testing deployment
 
-The requested site is `https://unicomnect-test.vercel.app`. On 11 November 2026 that address returned Vercel `DEPLOYMENT_NOT_FOUND`. Hosting is being restored from branch `fix/restore-testing-site`; do not assume an old URL is working until its health checks pass.
+The testing deployment uses `https://unicomnect-test-test11-04d8.vercel.app` and branch `fix/restore-testing-site`. The old requested address `https://unicomnect-test.vercel.app` returned `DEPLOYMENT_NOT_FOUND` and Vercel reports it assigned to another project, so it cannot be reclaimed from this account. Verify the new deployment health before use.
 
 ## Safe hosting configuration
 
@@ -12,9 +12,9 @@ The new isolated database is `uniconnect-qa-20261111` on the existing Neon Free 
 
 ## First-time provision of the new empty testing database
 
-Normal builds only compile the application and never initialize databases. `backend/deploy/provision-testing.ts` is an explicit one-time operation requiring `TESTING_ENVIRONMENT=1`, `DATABASE_MIGRATION_APPROVED=1`, the private connection URI, and a privately generated `DEMO_PASSWORD` of at least 16 characters. It refuses a database with existing application tables unless its own completion marker is present. It does not delete data or reset existing test accounts on subsequent runs.
+Normal builds only compile the application. They never initialize databases unless an operator explicitly enables the one-time testing provisioning flag described below. `backend/deploy/provision-testing.ts` is an explicit one-time operation requiring `TESTING_ENVIRONMENT=1`, `DATABASE_MIGRATION_APPROVED=1`, the private connection URI, and a privately generated `DEMO_PASSWORD` of at least 16 characters. It refuses a database with existing application tables unless its own completion marker is present. It does not delete data or reset existing test accounts on subsequent runs.
 
-An operator can run `node --import tsx deploy/provision-testing.ts` from `backend` after configuring those variables privately. For initial Vercel provisioning only, a one-off build command can run that command from backend before `node scripts/vercel-build.mjs`; afterwards restore the normal build command and remove the provisioning approval/password settings. This is authorized only for the newly created isolated database, not an existing production database.
+An operator can run `node --import tsx deploy/provision-testing.ts` from `backend` after configuring those variables privately. For initial Vercel provisioning only, set `TESTING_PROVISION_ONCE=1` alongside those approval settings. The build invokes the guarded provisioner explicitly; afterwards remove `TESTING_PROVISION_ONCE`, `DATABASE_MIGRATION_APPROVED`, and `DEMO_PASSWORD` from deployment settings. Subsequent normal builds never touch database contents. This is authorized only for the newly created isolated database, not an existing production database.
 
 The operation creates fictional role accounts, a software-testing course, assignments, submissions, announcements, a calendar event, discussion messages and fictional campus resources. Private credentials are handed to the project owner separately. Newly registered students can sign in immediately; newly registered instructors await admin approval.
 
