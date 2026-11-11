@@ -5,6 +5,7 @@ import { AccessTokenPayload, APIRequest } from "../types/api";
 import { db } from "../drizzle/db";
 import { RefreshTokensTable } from "../drizzle/schemas/user";
 import { eq } from "drizzle-orm";
+import { tokenSecret } from "../config/runtime";
 
 export const verifyAuth: RequestHandler = async (
   req: APIRequest<unknown>,
@@ -26,7 +27,7 @@ export const verifyAuth: RequestHandler = async (
   try {
     const decoded = jwt.verify(
       token,
-      process.env.ACCESS_TOKEN_SECRET!
+      tokenSecret("ACCESS_TOKEN_SECRET")
     ) as AccessTokenPayload;
 
     if(process.env.UNICONNECT_PUBLIC_HOST==="1"){
