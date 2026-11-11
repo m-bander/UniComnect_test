@@ -1,25 +1,27 @@
 const {request}=require('@playwright/test');
 const fs=require('node:fs');
 const baseURL=process.argv[2]||'http://localhost:3000';
-if(new URL(baseURL).hostname==='unicomnect-test.vercel.app')throw new Error('Use an isolated local or staging website for mutation-based workflow checks. Run npm run test:public for live health checks.');
+const privateAccess=process.env.QA_ACCESS_FILE?JSON.parse(fs.readFileSync(process.env.QA_ACCESS_FILE,'utf8')):null;
+const testPassword=privateAccess?.password||'UniConnect123!';
+if(!['localhost','127.0.0.1'].includes(new URL(baseURL).hostname)&&(process.argv[3]!=='--isolated-testing'||privateAccess?.website!==baseURL))throw new Error('Remote workflow checks require --isolated-testing and QA_ACCESS_FILE matching this isolated testing site.');
 const tag=Date.now().toString(36),code='CAMPUS-'+tag;
 const rows=[],clients=[],createdUsers=[],files=[];
 let admin,teacher,student,courseCreated=false,submissionPath;
 function check(name,ok,detail){rows.push({name,passed:!!ok,detail});if(!ok)throw new Error(name+': '+detail);}
 async function client(){const c=await request.newContext({baseURL});clients.push(c);return c;}
 async function status(name,response,expected){check(name,response.status()===expected,response.status()+(response.status()===expected?'':' '+(await response.text()).slice(0,300)));return response;}
-async function login(email,success=true){const c=await client();const r=await c.post('/api/auth/login',{data:{email,password:'UniConnect123!'}});await status(email+' login',r,success?200:401);if(!success)return;const data=await r.json();check('No password in login response',!JSON.stringify(data).includes('"password"'),email);return {c,h:{Authorization:'Bearer '+data.accessToken},user:data.user};}
+async function login(email,success=true){const c=await client();const r=await c.post('/api/auth/login',{data:{email,password:testPassword}});await status(email+' login',r,success?200:401);if(!success)return;const data=await r.json();check('No password in login response',!JSON.stringify(data).includes('"password"'),email);return {c,h:{Authorization:'Bearer '+data.accessToken},user:data.user};}
 async function upload(who,name='work.pdf'){const bytes=Buffer.from('%PDF-1.4\n% UniConnect functional check\n%%EOF');const r=await who.c.post('/api/uploads',{headers:who.h,data:{name,type:'application/pdf',content:bytes.toString('base64')}});await status('Authenticated persistent upload',r,201);const data=await r.json();files.push({owner:who,id:data.serverData.file_data.id});return data;}
 (async()=>{
  const guest=await client();
  let r=await guest.get('/api/catalog');await status('Public catalogue',r,200);const catalog=await r.json();check('Eight populated subject categories',catalog.departments.length===8,catalog.departments.length);check('Expanded course catalogue',catalog.courses.length>=25,catalog.courses.length);
  check('Realistic categories have courses',catalog.departments.every(d=>catalog.courses.filter(c=>c.department===d).length>=3),'At least three in each category');
  r=await guest.post('/api/users/register',{data:{email:'bad'}});await status('Invalid signup rejected',r,400);
- r=await guest.post('/api/users/register',{data:{first_name:'Functional',parent_name:'Check',email:`admin-${tag}@uniconnect.test`,password:'UniConnect123!',role:'system_admin'}});await status('Public admin registration denied',r,400);
+ r=await guest.post('/api/users/register',{data:{first_name:'Functional',parent_name:'Check',email:`admin-${tag}@uniconnect.test`,password:testPassword,role:'system_admin'}});await status('Public admin registration denied',r,400);
  admin=await login('admin@uniconnect.test');
  for(const role of ['student','professor/ta']){
    const email=`${role==='student'?'learner':'teacher'}-${tag}@uniconnect.test`;
-   r=await guest.post('/api/users/register',{data:{first_name:'Campus',parent_name:'Check',email,password:'UniConnect123!',role,year:'3',code:'CHECK-'+tag}});await status('Register '+role,r,201);
+   r=await guest.post('/api/users/register',{data:{first_name:'Campus',parent_name:'Check',email,password:testPassword,role,year:'3',code:'CHECK-'+tag}});await status('Register '+role,r,201);
    if(role==='professor/ta'){
      await login(email,false);
      r=await admin.c.get('/api/users?search='+encodeURIComponent(email),{headers:admin.h});await status('Find instructor for approval',r,200);const data=await r.json();const found=data.data.users.find(u=>u.email===email);check('Pending instructor exists',!!found,'Found');createdUsers.push(found.id);
@@ -71,5 +73,6 @@ async function upload(who,name='work.pdf'){const bytes=Buffer.from('%PDF-1.4\n% 
  }catch(error){console.error('Cleanup:',error.message);process.exitCode=1}
  await Promise.all(clients.map(c=>c.dispose()));
  const report={origin:baseURL,checkedAt:new Date().toISOString(),passed:rows.filter(r=>r.passed).length,failed:rows.filter(r=>!r.passed).length,checks:rows};
- fs.mkdirSync('qa/reports',{recursive:true});fs.writeFileSync('qa/reports/CAMPUS-SMOKE.json',JSON.stringify(report,null,2));console.log(`${report.passed} passed, ${report.failed} failed. Detailed result: qa/reports/CAMPUS-SMOKE.json`);
+ const reportPath=process.env.QA_REPORT_PATH||'qa/artifacts/CAMPUS-SMOKE.json';
+ fs.mkdirSync(require('node:path').dirname(reportPath),{recursive:true});fs.writeFileSync(reportPath,JSON.stringify(report,null,2));console.log(`${report.passed} passed, ${report.failed} failed. Report saved without credentials.`);
 });
