@@ -1,4 +1,27 @@
 import {test,expect,type Page} from "@playwright/test";
+test("UI-008 a new student can sign up through the form and log in", async ({page}) => {
+ const email=`browser-${Date.now()}@uniconnect.test`;
+ await page.goto("/signup");
+ await page.getByLabel("First Name",{exact:true}).fill("Browser");
+ await page.getByLabel("Second Name",{exact:true}).fill("Student");
+ await page.getByLabel("Email",{exact:true}).fill(email);
+ await page.getByLabel("Password",{exact:true}).fill("BrowserTest123!");
+ await page.getByLabel("Confirm Password",{exact:true}).fill("BrowserTest123!");
+ await page.getByRole("combobox",{name:"Role",exact:true}).click();
+ await page.getByRole("option",{name:"Student",exact:true}).click();
+ await page.getByLabel("College Code",{exact:true}).fill(`BROWSER-${Date.now()}`);
+ await page.getByRole("combobox",{name:"Current Year",exact:true}).click();
+ await page.getByRole("option",{name:"3",exact:true}).click();
+ await page.getByRole("button",{name:"Create Account",exact:true}).click();
+ await expect(page).toHaveURL(/\/login$/);
+ await page.getByLabel("E-Mail").fill(email);
+ await page.getByLabel("Password",{exact:true}).fill("BrowserTest123!");
+ await page.getByRole("button",{name:"Login",exact:true}).click();
+ await expect(page).toHaveURL(/\/student\/dashboard$/);
+ await page.reload();
+ await expect(page).toHaveURL(/\/student\/dashboard$/);
+ await expect(page.getByText("Browser",{exact:false}).first()).toBeVisible();
+});
 async function signIn(page:Page,role:string) {
  await page.goto("/login");
  await page.getByLabel("E-Mail").fill(role+"@uniconnect.test");

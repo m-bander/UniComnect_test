@@ -8,7 +8,7 @@ for(const [folder,args] of [
  ["frontend",["node_modules/vite/bin/vite.js","build"]]
 ]) {
  const result=spawnSync(process.execPath,args,{cwd:path.join(root,folder),stdio:"inherit",
- env:{...process.env,VITE_SERVER_URL:"",VITE_HOSTED:"1"}});
+ env:{...process.env,VITE_SERVER_URL:"",VITE_HOSTED:"1",VITE_TESTING_SITE:process.env.TESTING_ENVIRONMENT==="1"?"1":""}});
  if(result.status!==0)process.exit(result.status||1);
 }
 

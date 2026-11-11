@@ -43,6 +43,11 @@ const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
+    {import.meta.env.VITE_TESTING_SITE === "1" && (
+      <div role="note" className="bg-amber-100 px-4 py-2 text-center text-sm text-amber-950">
+        Software testing environment · Fictional data only
+      </div>
+    )}
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <ThemeProvider>

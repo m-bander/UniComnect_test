@@ -23,7 +23,7 @@ const RoleField = ({
       control={control}
       render={({ field, fieldState }) => (
         <Field orientation="responsive" data-invalid={fieldState.invalid}>
-          <FieldLabel>Role</FieldLabel>
+          <FieldLabel htmlFor="role">Role</FieldLabel>
           <Select
             name={field.name}
             value={field.value}
